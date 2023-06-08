@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using MovieDB.Entities;
 using MovieDB.Models;
+using NETCore.Encrypt.Extensions;
+using System.Security.Claims;
 
 namespace MovieDB.Controllers
 {
@@ -10,10 +14,13 @@ namespace MovieDB.Controllers
     {
 
         private readonly DatabaseContext _databaseContext;
+        private readonly IConfiguration _configiration;
 
-        public AccountController(DatabaseContext databaseContext)
+
+        public AccountController(DatabaseContext databaseContext, IConfiguration configiration)
         {
             _databaseContext = databaseContext;
+            _configiration = configiration;
         }
 
         public IActionResult Login()
@@ -25,7 +32,29 @@ namespace MovieDB.Controllers
         {
             if(ModelState.IsValid)
             {
-                // login islemleri
+                string Salt = _configiration.GetValue<string>("AppSettings:Salt");
+                string saltedpass = model.Password + Salt;
+                string hashedPasword = saltedpass.MD5();
+
+                User user = _databaseContext.Users.SingleOrDefault(x => x.email.ToLower() == model.email.ToLower() && x.Password == hashedPasword);
+                if (user != null)
+                {
+                    List<Claim> claims = new List<Claim>();
+                    claims.Add(new Claim("Id", user.Id.ToString()));
+                    claims.Add(new Claim("Name", user.FullName));
+                    claims.Add(new Claim("email", user.email));
+
+                    ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Username or password is incorrect.");
+                }
             }
 
             return View(model);
@@ -39,17 +68,27 @@ namespace MovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User()
+                if (_databaseContext.Users.Any(x => x.email.ToLower()== model.email.ToLower()))
+                {
+                    ModelState.AddModelError(nameof(model.email), "Email is already exists.");
+                    return View(model);
+                }
+                string Salt = _configiration.GetValue<string>("AppSettings:Salt");
+                string saltedpass = model.Password + Salt;
+                string hashedPasword = saltedpass.MD5();
+
+                User user = new ()
                 {
                     email = model.email,
-                    Password = model.Password
+                    Password = hashedPasword,
+                    FullName = model.FullName
                 };
 
                 _databaseContext.Users.Add(user);
                 
                 int affectedRowCount = _databaseContext.SaveChanges();
 
-                if(affectedRowCount > 0)
+                if(affectedRowCount == 0)
                 {
                     ModelState.AddModelError("", "User can not be added");
                 }
@@ -66,6 +105,12 @@ namespace MovieDB.Controllers
         public IActionResult Profile()
         {
             return View();
+        }
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
