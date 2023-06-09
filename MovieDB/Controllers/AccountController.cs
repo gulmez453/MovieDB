@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieDB.Entities;
 using MovieDB.Models;
@@ -8,11 +9,11 @@ using System.Security.Claims;
 
 namespace MovieDB.Controllers
 {
-
+    [Authorize]
     public class AccountController : Controller
 
     {
-
+        
         private readonly DatabaseContext _databaseContext;
         private readonly IConfiguration _configiration;
 
@@ -22,11 +23,13 @@ namespace MovieDB.Controllers
             _databaseContext = databaseContext;
             _configiration = configiration;
         }
-
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {
@@ -59,10 +62,14 @@ namespace MovieDB.Controllers
 
             return View(model);
         }
+
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
