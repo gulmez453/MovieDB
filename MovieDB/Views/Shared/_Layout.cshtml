@@ -45,7 +45,7 @@
 
                             <li class="nav-item ms-auto">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">
-                                    @User.FindFirst("Name")?.Value
+                                    @User.FindFirst("email")?.Value
                                 </a>
                             </li>
 

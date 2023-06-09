@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="row">
+    <div class="col-4 offset-4">
+        <h1 class="display-4 border-bottom text-center pb-2">@ViewData["Title"]</h1>
+
+
+    </div>
+
+</div>
+<div class="row">
+    <center>
+    <div class=" col-4 mt-4 center">
+        <div class="mb-4 ">
+        <div asp-validation-summary="All" class="text-danger small"></div>
+        </div>
+        <form method="post" asp-action="ProfileChangeEmail">
+            <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-group mb-3" >
+                
+                <input name="email" type="text" class="form-control" placeholder="@ViewData["email"]"/>
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Save</button>
+                
+            </div>
+                @if (ViewData["result"] != null && ViewData["result"] == "EmailChanged")
+                {
+                    <span class="text-success">Email Updated</span>
+                }
+            </div>
+        </form>
+
+        <form method="post" asp-action="ProfileChangeName">
+            <div class="form-group">
+                <label class="form-label mt-3">Name Surname</label>
+                <div class="input-group mb-3 ">
+
+                    <input name="name" type="text" class="form-control" placeholder="@ViewData["FullName"]" />
+                    <button class="btn btn-outline-secondary" type="submit">Save</button>
+
+                </div>
+                @if (ViewData["result"] != null && ViewData["result"] == "NameChanged")
+                {
+                    <span class="text-success">Name Updated</span>
+                }
+            </div>
+        </form>
+
+        <form method="post" asp-action="ProfileChangePassword">
+            <div class="form-group">
+                <label class="form-label mt-3">New Password</label>
+                <div class="input-group mb-3 ">
+
+                    <input name="password" type="password" class="form-control" placeholder="New Password" />
+                    <button class="btn btn-outline-secondary" type="submit" >Save</button>
+
+                </div>
+                @if (ViewData["result"] != null && ViewData["result"] == "PasswordChanged")
+                {
+                    <span class="text-success">Password Updated</span>    
+                }
+            </div>
+        </form>
+    </div>
+    </center>
+
+</div>
