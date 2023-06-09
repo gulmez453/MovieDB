@@ -1,4 +1,5 @@
-﻿@{
+﻿@model MovieViewModel
+@{
     ViewData["Title"] = "Update Movie";
 }
 
@@ -8,30 +9,35 @@
     <hr class="my-4">
 </div>
 
-<form class="row g-3" style="padding-left: 25%; padding-right: 25%">
+<form method="post" action="@Url.Action("UpdateMovie", "Admin")" class="row g-3" style="padding-left: 25%; padding-right: 25%">
     <div class="col-12">
-        <label for="movieTitle" class="form-label">Movie Title</label>
-        <input type="text" class="form-control" id="movieTitle" placeholder="Enter Movie Title">
+        <label asp-for="Title" class="form-label">Movie Title</label>
+        <input asp-for="Title" type="text" class="form-control" placeholder="Enter Movie Title">
+        <span asp-validation-for="Title" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
-        <label for="producer" class="form-label">Producer</label>
-        <input type="text" class="form-control" id="producer" placeholder="Enter Producer">
+        <label asp-for="Producer" class="form-label">Producer</label>
+        <input asp-for="Producer" type="text" class="form-control" placeholder="Enter Producer">
+        <span asp-validation-for="Producer" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
-        <label for="director" class="form-label">Director</label>
-        <input type="text" class="form-control" id="director" placeholder="Enter Director Name">
+        <label asp-for="Director" class="form-label">Director</label>
+        <input asp-for="Director" type="text" class="form-control" placeholder="Enter Director Name">
+        <span asp-validation-for="Director" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
-        <label for="musicDirector" class="form-label">Music Director</label>
-        <input type="text" class="form-control" id="musicDirector" placeholder="Enter Music Director">
+        <label asp-for="MusicDirector" class="form-label">Music Director</label>
+        <input asp-for="MusicDirector" type="text" class="form-control" placeholder="Enter Music Director">
+        <span asp-validation-for="MusicDirector" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
-        <label for="produceIn" class="form-label">Produce In</label>
-        <input type="text" class="form-control" id="produceIn" placeholder="Enter Produce In">
+        <label asp-for="ProduceIn" class="form-label">Music Director</label>
+        <input asp-for="ProduceIn" type="text" class="form-control" placeholder="Enter Produce In">
+        <span asp-validation-for="ProduceIn" class="text-danger small"></span>
     </div>
 
     <div class="col-12">

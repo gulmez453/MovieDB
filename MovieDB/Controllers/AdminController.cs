@@ -27,6 +27,7 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
+        [ActionName("AddMovie")]
         public  IActionResult AddMovie(MovieViewModel model)
         {
             if (ModelState.IsValid)
@@ -60,6 +61,38 @@ namespace MovieDB.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ActionName("UpdateMovie")]
+        public  IActionResult UpdateMovie(MovieViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the existing movie by its unique identifier, such as ID
+                Movie existingMovie = _databaseContext.Movies.FirstOrDefault(movie => movie.Title == model.Title);
+
+                if (existingMovie != null)
+                {
+                    // Update the properties of the existing movie with the new values
+                    existingMovie.Title = model.Title;
+                    existingMovie.Producer = model.Producer;
+                    existingMovie.Director = model.Director;
+                    existingMovie.MusicDirector = model.MusicDirector;
+                    existingMovie.ProduceIn = model.ProduceIn;
+
+                    // Save the changes to the database
+                    _databaseContext.SaveChanges();
+
+                    return RedirectToAction("Index", "Admin"); // Redirect to the Admin Index page after successful update
+                }
+                else
+                {
+                    ModelState.AddModelError("", "The movie does not exist");
+                }
+            }
+
+
+            return View(model);
+        }
         public IActionResult UpdateMovie()
         {
             return View();
