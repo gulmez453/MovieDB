@@ -9,7 +9,7 @@
     <hr class="my-4">
 </div>
 
-<form method="post" class="row g-3" style="padding-left: 25%; padding-right: 25%">
+<form method="post" action="@Url.Action("AddMovie", "Admin")" class="row g-3" style="padding-left: 25%; padding-right: 25%">
     <div class="col-12">
         <label asp-for="Title" class="form-label">Movie Title</label>
         <input asp-for="Title" type="text" class="form-control" placeholder="Enter Movie Title">
