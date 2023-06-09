@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/MovieDB/Views/Admin/AddMovie.cshtml
+/.gitignore
+/MovieDB/appsettings.json
