@@ -7,7 +7,7 @@ using NuGet.Protocol.Plugins;
 
 namespace MovieDB.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="admin")]
     public class AdminController : Controller
     {
         private readonly DatabaseContext _databaseContext;
