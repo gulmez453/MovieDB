@@ -23,5 +23,10 @@ namespace MovieDB.Models
         [Required(ErrorMessage = "required")]
         [StringLength(30, ErrorMessage = "can be max 30 characters")]
         public string ProduceIn { get; set; }
+
+        [Required(ErrorMessage = "required")]
+        [Display(Name = "Choose Image")]
+        public IFormFile Image { get; set; }
+
     }
 }

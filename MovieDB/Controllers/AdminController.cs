@@ -26,6 +26,12 @@ namespace MovieDB.Controllers
             return View();
         }
 
+        public IActionResult ListMovies()
+        {
+            List<Movie> allMovies = _databaseContext.Movies.ToList();
+            return View(allMovies);
+        }
+
         [HttpPost]
         [ActionName("AddMovie")]
         public  IActionResult AddMovie(MovieViewModel model)
@@ -38,6 +44,13 @@ namespace MovieDB.Controllers
                     return View(model);
                 }
 
+                byte[] imageData;
+                using (var memoryStream = new MemoryStream())
+                {
+                    model.Image.CopyTo(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
+
                 Movie movie = new Movie()
                 {
                     Title = model.Title,
@@ -45,6 +58,7 @@ namespace MovieDB.Controllers
                     Director = model.Director,
                     MusicDirector = model.MusicDirector,
                     ProduceIn = model.ProduceIn,
+                    Image = imageData,
                 };
 
                 _databaseContext.Movies.Add(movie);

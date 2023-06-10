@@ -64,6 +64,26 @@
         </div>
     </div>
 
+    <div class="col-12">
+        <div class="d-flex align-items-center">
+            <label for="inputState" class="form-label me-2">Type</label>
+            <select id="inputState" class="form-select">
+                <option selected>Choose...</option>
+                <option>Action</option>
+                <option>Drama</option>
+                <option>Comedia</option>
+                <option>Adventure</option>
+                <option>Cartoon</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Image" class="form-label"></label>
+        <input asp-for="Image" type="file" class="form-control">
+        <span asp-validation-for="Image" class="text-danger small"></span>
+    </div>
+
     <button type="submit" class="btn btn-primary">Update Movie</button>
 
 </form>

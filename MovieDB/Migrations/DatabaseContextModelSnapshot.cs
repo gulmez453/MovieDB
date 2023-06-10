@@ -33,6 +33,10 @@ namespace MovieDB.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("MusicDirector")
                         .IsRequired()
                         .HasMaxLength(30)

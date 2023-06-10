@@ -29,6 +29,9 @@ namespace MovieDB.Entities
         [StringLength(30)]
         [Required]
         public string ProduceIn { get; set; }
+        
+        [Required]
+        public byte[] Image { get; set; }
 
     }
 }
