@@ -1,0 +1,43 @@
+﻿@model List<MovieDB.Entities.User>
+@{
+    ViewData["Title"] = "List Users";
+}
+<div class="jumbotron text-center">
+    <h1 class="display-5">@ViewData["Title"]</h1>
+    <p class="lead">You can list your movies here.</p>
+    <hr class="my-4">
+</div>
+
+<div>
+    <form method="post" action="/User/UpdateAuthority">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Administrator Authority</th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@movie.FullName</td>
+                        <td>@movie.email</td>
+                        <td>@movie.Password</td>
+                        <td><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled @(movie.Role == "admin" ? "checked" : "")></td>
+                        <td>
+                            <a class="btn btn-primary" asp-area="" asp-controller="Admin" asp-action="UpdateUser" asp-route-userId="@movie.Id">Update</a>
+                            <a class="btn btn-danger" asp-area="" asp-controller="Admin" asp-action="RemoveUser" asp-route-userId="@movie.Id">Remove</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+    
+
+</div>

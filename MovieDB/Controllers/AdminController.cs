@@ -4,6 +4,9 @@ using MovieDB.Entities;
 using MovieDB.Models;
 using NETCore.Encrypt.Extensions;
 using NuGet.Protocol.Plugins;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace MovieDB.Controllers
 {
@@ -11,9 +14,11 @@ namespace MovieDB.Controllers
     public class AdminController : Controller
     {
         private readonly DatabaseContext _databaseContext;
-        public AdminController(DatabaseContext databaseContext)
+        private readonly IConfiguration _configiration;
+        public AdminController(DatabaseContext databaseContext, IConfiguration configiration)
         {
             _databaseContext = databaseContext;
+            _configiration = configiration;
         }
 
         public IActionResult Index()
@@ -26,6 +31,12 @@ namespace MovieDB.Controllers
             return View();
         }
 
+        public IActionResult ListUsers()
+        {
+            List<User> allMovies = _databaseContext.Users.ToList();
+            return View(allMovies);
+
+        }
         public IActionResult ListMovies()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
@@ -107,9 +118,112 @@ namespace MovieDB.Controllers
 
             return View(model);
         }
+
+
+        [HttpPost]
+        [ActionName("RemoveMovie")]
+        public IActionResult RemoveMovie(Guid userId)
+        {
+            Movie movie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == userId);
+
+            if (movie != null)
+            {
+                _databaseContext.Movies.Remove(movie);
+
+                int affectedRowCount = _databaseContext.SaveChanges();
+
+                if (affectedRowCount == 0)
+                {
+                    ModelState.AddModelError("", "The movie can not be removed");
+                }
+
+            }
+
+            return View("ListMovies");
+        }
+
+
+        public IActionResult UpdateUser(Guid userId)
+        {
+            User user_filtered = _databaseContext.Users.SingleOrDefault(user => user.Id == userId);
+            return View(user_filtered);
+        }
+        private string SaltFunction(string password)
+        {
+            string Salt = _configiration.GetValue<string>("AppSettings:Salt");
+            string saltedpass = password + Salt;
+            string hashedPasword = saltedpass.MD5();
+            return hashedPasword;
+        }
         public IActionResult UpdateMovie()
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult UpdateProfileEmail([Required][StringLength(30)] string? email)
+        {
+
+            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+
+            user.email = email;
+            _databaseContext.SaveChanges();
+            ViewData["result"] = "EmailChanged";
+
+
+            return View("UpdateUser", user);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfileName([Required][StringLength(30)] string? name)
+        {
+
+            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+
+            user.FullName = name;
+            _databaseContext.SaveChanges();
+            ViewData["result"] = "NameChanged";
+
+
+         
+            return View("UpdateUser", user);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfilePassword([Required][MinLength(6)][MaxLength(16)] string? password)
+        {
+
+            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+
+            string hashedPassword = SaltFunction(password);
+
+            user.Password = hashedPassword;
+            _databaseContext.SaveChanges();
+
+            ViewData["result"] = "PasswordChanged";
+            
+       
+            return View("UpdateUser", user);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfileRole([Required] string role)
+        {
+
+            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+
+            user.Role = role == "on" ? "admin" : "user";
+            _databaseContext.SaveChanges();
+            ViewData["result"] = "RoleChanged";
+
+
+
+            return View("UpdateUser", user);
+        }
+
     }
 }
