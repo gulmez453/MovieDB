@@ -15,10 +15,14 @@ namespace MovieDB.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Producer = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Artists = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Director = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    MusicDirector = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    ProduceIn = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    ProduceYear = table.Column<int>(type: "int", nullable: false),
+                    Rate = table.Column<int>(type: "int", nullable: false),
+                    Hour = table.Column<int>(type: "int", nullable: false),
+                    Minute = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>

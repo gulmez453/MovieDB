@@ -5,6 +5,7 @@ using MovieDB.Models;
 using NETCore.Encrypt.Extensions;
 using NuGet.Protocol.Plugins;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Security.Claims;
 using System.Xml.Linq;
 
@@ -26,11 +27,6 @@ namespace MovieDB.Controllers
             return View();
         }
 
-        public IActionResult AddMovie()
-        {
-            return View();
-        }
-
         public IActionResult ListUsers()
         {
             List<User> allMovies = _databaseContext.Users.ToList();
@@ -43,9 +39,26 @@ namespace MovieDB.Controllers
             return View(allMovies);
         }
 
+        public IActionResult GetImage(Guid movieId)
+        {
+            Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
+            if (movie != null && movie.Image != null)
+            {
+                return File(movie.Image, "image/jpeg"); // Modify the content type based on your image format
+            }
+
+            // If the movie or image is not found, you can return a default image or an error message
+            return File("~/images/default.jpg", "image/jpeg"); // Replace with your default image path and content type
+        }
+
+        public IActionResult AddMovie()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ActionName("AddMovie")]
-        public  IActionResult AddMovie(MovieViewModel model)
+        public IActionResult AddMovie(MovieViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -65,10 +78,14 @@ namespace MovieDB.Controllers
                 Movie movie = new Movie()
                 {
                     Title = model.Title,
-                    Producer = model.Producer,
+                    Artists = model.Artists,
                     Director = model.Director,
-                    MusicDirector = model.MusicDirector,
-                    ProduceIn = model.ProduceIn,
+                    Type = model.Type,
+                    ProduceYear = model.ProduceYear,
+                    Rate = model.Rate,
+                    Hour = model.Hour,
+                    Minute = model.Minute,
+                    Description = model.Description,
                     Image = imageData,
                 };
 
@@ -79,11 +96,22 @@ namespace MovieDB.Controllers
                 if (affectedRowCount == 0)
                 {
                     ModelState.AddModelError("", "The movie can not be added");
+
+                }
+                else
+                {
+                    List<Movie> allMovies = _databaseContext.Movies.ToList();
+                    return View("ListMovies", allMovies);
                 }
 
             }
+            return View();
+        }
 
-            return View(model);
+        public IActionResult UpdateMovie(Guid movieId)
+        {
+            ViewData["movieId"] = movieId;
+            return View();
         }
 
         [HttpPost]
@@ -93,38 +121,49 @@ namespace MovieDB.Controllers
             if (ModelState.IsValid)
             {
                 // Find the existing movie by its unique identifier, such as ID
-                Movie existingMovie = _databaseContext.Movies.FirstOrDefault(movie => movie.Title == model.Title);
+                Movie existingMovie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == model.Id);
 
                 if (existingMovie != null)
                 {
                     // Update the properties of the existing movie with the new values
+                    byte[] imageData;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.Image.CopyTo(memoryStream);
+                        imageData = memoryStream.ToArray();
+                    }
+
                     existingMovie.Title = model.Title;
-                    existingMovie.Producer = model.Producer;
+                    existingMovie.Artists = model.Artists;
                     existingMovie.Director = model.Director;
-                    existingMovie.MusicDirector = model.MusicDirector;
-                    existingMovie.ProduceIn = model.ProduceIn;
+                    existingMovie.Type = model.Type;
+                    existingMovie.ProduceYear = model.ProduceYear;
+                    existingMovie.Rate = model.Rate;
+                    existingMovie.Hour = model.Hour;
+                    existingMovie.Minute = model.Minute;
+                    existingMovie.Description = model.Description;
+                    existingMovie.Image = imageData;
 
                     // Save the changes to the database
                     _databaseContext.SaveChanges();
 
-                    return RedirectToAction("Index", "Admin"); // Redirect to the Admin Index page after successful update
+                    List<Movie> allMovies = _databaseContext.Movies.ToList();
+                    return View("ListMovies", allMovies);
                 }
                 else
                 {
                     ModelState.AddModelError("", "The movie does not exist");
                 }
             }
+            return View();
 
-
-            return View(model);
         }
 
 
-        [HttpPost]
         [ActionName("RemoveMovie")]
-        public IActionResult RemoveMovie(Guid userId)
+        public IActionResult RemoveMovie(Guid movieId)
         {
-            Movie movie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == userId);
+            Movie movie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == movieId);
 
             if (movie != null)
             {
@@ -139,7 +178,31 @@ namespace MovieDB.Controllers
 
             }
 
-            return View("ListMovies");
+            List<Movie> allMovies = _databaseContext.Movies.ToList();
+            return View("ListMovies", allMovies);
+
+        }
+
+        [ActionName("RemoveUser")]
+        public IActionResult RemoveUser(Guid userId)
+        {
+            User user = _databaseContext.Users.FirstOrDefault(movie => movie.Id == userId);
+
+            if (user != null)
+            {
+                _databaseContext.Users.Remove(user);
+
+                int affectedRowCount = _databaseContext.SaveChanges();
+
+                if (affectedRowCount == 0)
+                {
+                    ModelState.AddModelError("", "The user can not be removed");
+                }
+
+            }
+
+            List<User> allMovies = _databaseContext.Users.ToList();
+            return View("ListUsers", allMovies);
         }
 
 
@@ -155,11 +218,7 @@ namespace MovieDB.Controllers
             string hashedPasword = saltedpass.MD5();
             return hashedPasword;
         }
-        public IActionResult UpdateMovie()
-        {
-            return View();
-        }
-
+        
         [HttpPost]
         public IActionResult UpdateProfileEmail([Required][StringLength(30)] string? email)
         {

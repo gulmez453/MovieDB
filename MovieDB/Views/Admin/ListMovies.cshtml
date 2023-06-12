@@ -12,11 +12,15 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Image</th>
                 <th>Title</th>
-                <th>Producer</th>
+                <th>Artists</th>
                 <th>Director</th>
-                <th>MusicDirector</th>
-                <th>ProduceIn</th>
+                <th>Type</th>
+                <th>Running Time</th>
+                <th>Rate</th>
+                <th>Produce Year</th>
+                <th>Description</th>
                 <th></th>
    
             </tr>
@@ -24,15 +28,28 @@
         <tbody>
             @foreach (var movie in Model)
             {
-                <tr>
+                <tr class="align-middle">
+                    <td>
+                        @if (movie.Image != null)
+                        {
+                            <img style="height: 100px; width: 125px" src="@Url.Action("GetImage", new { movieId = movie.Id })" alt="Movie Image" />
+                        }
+                        else
+                        {
+                            <span>No Image Available</span>
+                        }
+                    </td>
                     <td>@movie.Title</td>
-                    <td>@movie.Producer</td>
+                    <td>@movie.Artists</td>
                     <td>@movie.Director</td>
-                    <td>@movie.MusicDirector</td>
-                    <td>@movie.ProduceIn</td>
-                    <td><a class="btn btn-primary" asp-area="" asp-controller="" asp-action="">Details</a>
-                        <a class="btn btn-primary" asp-area="" asp-controller="Admin" asp-action="UpdateMovie">Update</a>
-                        <a class="btn btn-danger" asp-area="" asp-controller="Admin" asp-action="RemoveMovie" asp-route-userId="@movie.Id">Remove</a>
+                    <td>@movie.Type</td>
+                    <td>@(movie.Hour + "h " + movie.Minute + "m")</td>
+                    <td>@movie.Rate</td>
+                    <td>@movie.ProduceYear</td>
+                    <td>@movie.Description</td>
+                    <td>
+                        <a class="btn btn-primary" asp-area="" asp-controller="Admin" asp-action="UpdateMovie" asp-route-movieId="@movie.Id">Update</a>
+                        <a class="btn btn-danger" asp-area="" asp-controller="Admin" asp-action="RemoveMovie" asp-route-movieId="@movie.Id">Remove</a>
                 </tr>
             }
         </tbody>

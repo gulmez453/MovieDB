@@ -16,7 +16,7 @@ namespace MovieDB.Entities
 
         [StringLength(30)]
         [Required]
-        public string Producer { get; set; }
+        public string Artists { get; set; }
 
         [StringLength(30)]
         [Required]
@@ -24,12 +24,24 @@ namespace MovieDB.Entities
 
         [StringLength(30)]
         [Required]
-        public string MusicDirector { get; set; }
+        public string Type { get; set; }
+
+        [Required]
+        public int ProduceYear { get; set; }
+
+        [Required]
+        public int Rate { get; set; }
+
+        [Required]
+        public int Hour { get; set; }
+
+        [Required]
+        public int Minute { get; set; }
 
         [StringLength(30)]
         [Required]
-        public string ProduceIn { get; set; }
-        
+        public string Description { get; set; }
+
         [Required]
         public byte[] Image { get; set; }
 

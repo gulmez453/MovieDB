@@ -4,7 +4,7 @@
 }
 <div class="jumbotron text-center">
     <h1 class="display-5">@ViewData["Title"]</h1>
-    <p class="lead">You can list your movies here.</p>
+    <p class="lead">You can list your users here.</p>
     <hr class="my-4">
 </div>
 
@@ -24,7 +24,7 @@
             <tbody>
                 @foreach (var movie in Model)
                 {
-                    <tr>
+                    <tr class="align-middle">
                         <td>@movie.FullName</td>
                         <td>@movie.email</td>
                         <td>@movie.Password</td>
