@@ -14,17 +14,15 @@ namespace MovieDB.Controllers
             _databaseContext = databaseContext;
         }
 
-        public IActionResult Index()
+        private List<MovieComments> getMovieComments(List<Movie> allMovies)
         {
             List<MovieComments> commentedMovies = new List<MovieComments>();
-            List<Movie> allMovies = _databaseContext.Movies.ToList();
-            
-            foreach(Movie movie in allMovies)
+            foreach (Movie movie in allMovies)
             {
                 List<UserComment> userComments = new List<UserComment>();
                 List<MovieUser> movieUserComments = _databaseContext.MovieUserComments.Where(muc => muc.MovieId == movie.Id).ToList();
-            
-                foreach(MovieUser movieUser in movieUserComments)
+
+                foreach (MovieUser movieUser in movieUserComments)
                 {
                     User user = _databaseContext.Users.SingleOrDefault(user => user.Id == movieUser.UserId);
                     Comment comment = _databaseContext.Comments.SingleOrDefault(comment => comment.MovieUserId == movieUser.Id);
@@ -45,8 +43,13 @@ namespace MovieDB.Controllers
                 commentedMovies.Add(movieComments);
 
             }
+            return commentedMovies;
+        }
 
-            return View(commentedMovies);
+        public IActionResult Index()
+        {
+            List<Movie> allMovies = _databaseContext.Movies.ToList();
+            return View(getMovieComments(allMovies));
         }
 
         [HttpPost]
@@ -75,6 +78,25 @@ namespace MovieDB.Controllers
             _databaseContext.SaveChanges(); 
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult SearchMovie()
+        {
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpPost]
+        public IActionResult SearchMovie(string searchText)
+        {
+            List<Movie> allMovies;
+            if (searchText != null && searchText != "")
+                allMovies = _databaseContext.Movies.Where(movie => movie.Title == searchText.Trim()).ToList();
+
+            else
+                 allMovies = _databaseContext.Movies.ToList();
+            return View("Index", getMovieComments(allMovies));
+
         }
 
         public IActionResult GetImage(Guid movieId)
