@@ -12,7 +12,7 @@ using MovieDB.Entities;
 namespace MovieDB.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230611205619_InitialCreate")]
+    [Migration("20230613142053_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,29 @@ namespace MovieDB.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("MovieDB.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasMaxLength(50)
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MovieUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
 
             modelBuilder.Entity("MovieDB.Entities.Movie", b =>
                 {
@@ -74,6 +97,23 @@ namespace MovieDB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movies");
+                });
+
+            modelBuilder.Entity("MovieDB.Entities.MovieUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MoviesUsers");
                 });
 
             modelBuilder.Entity("MovieDB.Entities.User", b =>

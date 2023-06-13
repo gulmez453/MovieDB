@@ -100,8 +100,7 @@ namespace MovieDB.Controllers
                 }
                 else
                 {
-                    List<Movie> allMovies = _databaseContext.Movies.ToList();
-                    return View("ListMovies", allMovies);
+                    return RedirectToAction("ListMovies");
                 }
 
             }
@@ -147,8 +146,7 @@ namespace MovieDB.Controllers
                     // Save the changes to the database
                     _databaseContext.SaveChanges();
 
-                    List<Movie> allMovies = _databaseContext.Movies.ToList();
-                    return View("ListMovies", allMovies);
+                    return RedirectToAction("ListMovies");
                 }
                 else
                 {
@@ -178,8 +176,7 @@ namespace MovieDB.Controllers
 
             }
 
-            List<Movie> allMovies = _databaseContext.Movies.ToList();
-            return View("ListMovies", allMovies);
+            return RedirectToAction("ListMovies");
 
         }
 
@@ -201,8 +198,7 @@ namespace MovieDB.Controllers
 
             }
 
-            List<User> allMovies = _databaseContext.Users.ToList();
-            return View("ListUsers", allMovies);
+            return RedirectToAction("ListMovies");
         }
 
 

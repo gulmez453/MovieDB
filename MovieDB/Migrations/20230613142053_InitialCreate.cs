@@ -10,6 +10,20 @@ namespace MovieDB.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MovieUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommentText = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Movies",
                 columns: table => new
                 {
@@ -31,6 +45,19 @@ namespace MovieDB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MoviesUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MoviesUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -49,7 +76,13 @@ namespace MovieDB.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
                 name: "Movies");
+
+            migrationBuilder.DropTable(
+                name: "MoviesUsers");
 
             migrationBuilder.DropTable(
                 name: "Users");
