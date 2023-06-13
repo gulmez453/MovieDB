@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieDB.Entities;
 using MovieDB.Models;
 using System.Diagnostics;
 
@@ -9,16 +10,31 @@ namespace MovieDB.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly DatabaseContext _databaseContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
         {
             _logger = logger;
+            _databaseContext = databaseContext;
+        
         }
+        [AllowAnonymous]
+        public IActionResult GetImage(Guid movieId)
+        {
+            Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
+            if (movie != null && movie.Image != null)
+            {
+                return File(movie.Image, "image/jpeg"); // Modify the content type based on your image format
+            }
 
+            // If the movie or image is not found, you can return a default image or an error message
+            return File("~/images/default.jpg", "image/jpeg"); // Replace with your default image path and content type
+        }
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            List<Movie> allMovies = _databaseContext.Movies.ToList();
+            return View(allMovies);
         }
 
         [AllowAnonymous]
