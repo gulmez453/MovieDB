@@ -29,9 +29,12 @@
                     <a class="me-1" href="#" onclick="toggleCommentArea(this); return false;" style="text-decoration: none;">Add Comment</a>
                     <a class="ms-1 me-1" href="#" onclick="toggleCommentsView(this); return false;" style="text-decoration: none;">View Comments</a>
                     <a class="ms-1" href="#" onclick="openModal(this); return false;" data-bs-toggle="modal"
-                       data-bs-target="#detailsModal" style="text-decoration: none;" data-movie-title="@movieComments.Movie.Title" 
-                       data-movie-Type="@movieComments.Movie.Type" data-movie-image-url="@Url.Action("GetImage", new { movieId = movieComments.Movie.Id })" 
-                    data-movie-description="@movieComments.Movie.Description" data-movie-produce-year="@movieComments.Movie.ProduceYear">
+                    data-bs-target="#detailsModal" style="text-decoration: none;" data-movie-title="@movieComments.Movie.Title"
+                    data-movie-artists="@movieComments.Movie.Artists" data-movie-director="@movieComments.Movie.Director"
+                    data-movie-type="@movieComments.Movie.Type" data-movie-image-url="@Url.Action("GetImage", new { movieId = movieComments.Movie.Id })" 
+                    data-movie-description="@movieComments.Movie.Description" data-movie-produce-year="@movieComments.Movie.ProduceYear"
+                    data-movie-rate="@movieComments.Movie.Rate" data-movie-hour="@movieComments.Movie.Hour" 
+                    data-movie-minute="@movieComments.Movie.Minute">
                     Details
                     </a>
                 </div>
@@ -46,7 +49,7 @@
                         <p>@userComment.User.FullName</p>
                     </div>
                     <div class="col-9">
-                        <textarea class="ps-2" disabled style="width: 100%; height: 50px; resize: none;">@userComment.Comment.CommentText</textarea>
+                        <textarea class="ps-2" disabled style="width: 100%; resize: none;">@userComment.Comment.CommentText</textarea>
                     </div>
                     <div class="col-1 d-flex justify-content-end">
                         @if (@User.FindFirst("id")?.Value == userComment.User.Id.ToString())
@@ -84,11 +87,23 @@
                     </div>
                     <div class="col-7">
                         <p id="modalMovieType"></p>
+                        <p id="modalMovieArtists"></p>
+                        <p id="modalMovieDirector"></p>
                         <p id="modalMovieProduceYear"></p>
                     </div>
                 </div>
                 <div class="row">
-                    <p id="modalMovieDescription"></p>
+                    <div class="col-5">
+                        <p id="modalMovieRunningTime"></p>
+                    </div>
+                    <div class="col-7">
+                        <p id="modalMovieRate"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <textarea id="modalMovieDescription" class="ps-2" disabled style="width: 100%; resize: none;"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -111,22 +126,37 @@
 
     function openModal(link) {
         var modalTitle = document.getElementById('detailsModalLabel');
+        var modalArtists = document.getElementById('modalMovieArtists');
+        var modalDirector = document.getElementById('modalMovieDirector');
         var modalType = document.getElementById('modalMovieType');
         var modalImage = document.getElementById('modalMovieImage');
         var modalDescription = document.getElementById('modalMovieDescription');
         var modalProduceYear = document.getElementById('modalMovieProduceYear');
+        var modalRunningTime = document.getElementById('modalMovieRunningTime');
+        var modalRate = document.getElementById('modalMovieRate');
 
         var title = link.dataset.movieTitle;
+        var artists = link.dataset.movieArtists;
+        var director = link.dataset.movieDirector;
         var type = link.dataset.movieType;
         var imageUrl = link.dataset.movieImageUrl;
         var description = link.dataset.movieDescription;
         var produceYear = link.dataset.movieProduceYear;
+        var hour = link.dataset.movieHour;
+        var minute = link.dataset.movieMinute;
+        var rate = link.dataset.movieRate;
+
 
         modalTitle.textContent = title;
-        modalType.textContent = type;
+        modalArtists.textContent = "Artists: " + artists;
+        modalDirector.textContent = "Director: " + director;
+        modalType.textContent = "Type: " + type;
         modalImage.src = imageUrl;
         modalDescription.textContent = description;
         modalProduceYear.textContent = "Produce Year: " + produceYear;
+        modalRate.textContent = "Rate: " + rate + "/5";
+        modalRunningTime.textContent = "Running Time: " + hour + "h " + minute + "m";
+        
     }
 
 </script>
