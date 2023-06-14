@@ -211,11 +211,9 @@ namespace MovieDB.Controllers
         }
         
         [HttpPost]
-        public IActionResult UpdateProfileEmail([Required][StringLength(30)] string? email)
+        public IActionResult UpdateProfileEmail(Guid userId, [Required][StringLength(30)] string? email)
         {
-
-            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
             user.email = email;
             _databaseContext.SaveChanges();
@@ -226,11 +224,9 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProfileName([Required][StringLength(30)] string? name)
+        public IActionResult UpdateProfileName(Guid userId, [Required][StringLength(30)] string? name)
         {
-
-            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
             user.FullName = name;
             _databaseContext.SaveChanges();
@@ -242,11 +238,9 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProfilePassword([Required][MinLength(6)][MaxLength(16)] string? password)
+        public IActionResult UpdateProfilePassword(Guid userId, [Required][MinLength(6)][MaxLength(16)] string? password)
         {
-
-            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
             string hashedPassword = SaltFunction(password);
 
@@ -260,11 +254,9 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProfileRole([Required] string role)
+        public IActionResult UpdateProfileRole(Guid userId, string? role)
         {
-
-            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
+            User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
             user.Role = role == "on" ? "admin" : "user";
             _databaseContext.SaveChanges();

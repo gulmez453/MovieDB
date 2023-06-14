@@ -21,12 +21,11 @@
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <div class="input-group mb-3">
-
+                        <input name="userId" type="hidden" value="@Model.Id" />
                         <input name="email" type="text" class="form-control" placeholder="@Model.email" value="@Model.email" />
                         <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Save</button>
-
                     </div>
-                    @if (ViewData["result"] != null && ViewData["result"] == "EmailChanged")
+                    @if (ViewData["result"] == "EmailChanged")
                     {
                         <span class="text-success">Email Updated</span>
                     }
@@ -37,12 +36,12 @@
                 <div class="form-group">
                     <label class="form-label mt-3">Name Surname</label>
                     <div class="input-group mb-3 ">
-
+                        <input name="userId" type="hidden" value="@Model.Id" />
                         <input input name="name" type="text" class="form-control" placeholder="@Model.FullName" value="@Model.FullName" />
                         <button class="btn btn-outline-secondary" type="submit">Save</button>
 
                     </div>
-                    @if (ViewData["result"] != null && ViewData["result"] == "NameChanged")
+                    @if (ViewData["result"] == "NameChanged")
                     {
                         <span class="text-success">Name Updated</span>
                     }
@@ -53,12 +52,12 @@
                 <div class="form-group">
                     <label class="form-label mt-3">New Password</label>
                     <div class="input-group mb-3 ">
-
+                        <input name="userId" type="hidden" value="@Model.Id" />
                         <input name="password" type="password" class="form-control" placeholder="New Password" />
                         <button class="btn btn-outline-secondary" type="submit">Save</button>
 
                     </div>
-                    @if (ViewData["result"] != null && ViewData["result"] == "PasswordChanged")
+                    @if (ViewData["result"] == "PasswordChanged")
                     {
                         <span class="text-success">Password Updated</span>
                     }
@@ -70,11 +69,12 @@
                         <label class="form-label mt-3">Role Is Administrator</label>
                     </div>
                     <div class="form-check">
+                        <input name="userId" type="hidden" value="@Model.Id" />
                         <input name="role" class="form-check-input" type="checkbox" @(Model.Role == "admin" ? "checked" : "")>
                     </div>
                     <button class="btn btn-outline-secondary ms-auto" type="submit">Save</button>
                 </div>
-                @if (ViewData["result"] != null && ViewData["result"] == "RoleChanged")
+                @if (ViewData["result"] == "RoleChanged")
                 {
                     <span class="text-success">Role Updated</span>
                 }
