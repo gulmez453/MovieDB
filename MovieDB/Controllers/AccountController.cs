@@ -49,6 +49,7 @@ namespace MovieDB.Controllers
                     claims.Add(new Claim(ClaimTypes.Name, user.FullName?? string.Empty));
                     claims.Add(new Claim(ClaimTypes.Role, user.Role?? string.Empty));
                     claims.Add(new Claim("email", user.email));
+                    claims.Add(new Claim("id", user.Id.ToString()));
 
                     ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

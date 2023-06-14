@@ -20,7 +20,7 @@ namespace MovieDB.Controllers
             foreach (Movie movie in allMovies)
             {
                 List<UserComment> userComments = new List<UserComment>();
-                List<MovieUser> movieUserComments = _databaseContext.MovieUserComments.Where(muc => muc.MovieId == movie.Id).ToList();
+                List<MovieUser> movieUserComments = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movie.Id).ToList();
 
                 foreach (MovieUser movieUser in movieUserComments)
                 {
@@ -80,6 +80,26 @@ namespace MovieDB.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult RemoveComment(Guid commentId)
+        {
+            Comment comment;
+            comment = _databaseContext.Comments.SingleOrDefault(comment => comment.Id == commentId);
+            if(comment != null)
+            {
+                Guid movieUserId = comment.MovieUserId;
+                _databaseContext.Remove(comment);
+
+                MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.Id == movieUserId);
+                if (movieUser != null)
+                {
+                    _databaseContext.Remove(movieUser);
+                }
+            }
+
+            _databaseContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         public IActionResult SearchMovie()
         {
             return RedirectToAction("Index");
@@ -91,10 +111,10 @@ namespace MovieDB.Controllers
         {
             List<Movie> allMovies;
             if (searchText != null && searchText != "")
-                allMovies = _databaseContext.Movies.Where(movie => movie.Title == searchText.Trim()).ToList();
+                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(searchText.Trim())).ToList();
 
             else
-                 allMovies = _databaseContext.Movies.ToList();
+                allMovies = _databaseContext.Movies.ToList();
             return View("Index", getMovieComments(allMovies));
 
         }
