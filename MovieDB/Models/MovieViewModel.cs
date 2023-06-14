@@ -26,13 +26,16 @@ namespace MovieDB.Models
         public int ProduceYear { get; set; }
 
         [Required(ErrorMessage = "required")]
-        public int Rate { get; set; }
+        [Range(0, 5, ErrorMessage = "required")]
+        public int Rate { get; set; } = -1;
 
         [Required(ErrorMessage = "required")]
-        public int Hour { get; set; }
+        [Range(0, 5, ErrorMessage = "required")]
+        public int Hour { get; set; } = -1;
 
         [Required(ErrorMessage = "required")]
-        public int Minute { get; set; }
+        [Range(0, 60, ErrorMessage = "required")]
+        public int Minute { get; set; } = -1;
 
         [Required(ErrorMessage = "required")]
         [StringLength(30, ErrorMessage = "can be max 30 characters")]

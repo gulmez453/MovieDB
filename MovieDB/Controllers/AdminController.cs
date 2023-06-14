@@ -57,7 +57,6 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        [ActionName("AddMovie")]
         public IActionResult AddMovie(MovieViewModel model)
         {
             if (ModelState.IsValid)
@@ -114,7 +113,6 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        [ActionName("UpdateMovie")]
         public  IActionResult UpdateMovie(MovieViewModel model)
         {
             if (ModelState.IsValid)
@@ -157,8 +155,6 @@ namespace MovieDB.Controllers
 
         }
 
-
-        [ActionName("RemoveMovie")]
         public IActionResult RemoveMovie(Guid movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == movieId);
@@ -180,7 +176,6 @@ namespace MovieDB.Controllers
 
         }
 
-        [ActionName("RemoveUser")]
         public IActionResult RemoveUser(Guid userId)
         {
             User user = _databaseContext.Users.FirstOrDefault(movie => movie.Id == userId);
