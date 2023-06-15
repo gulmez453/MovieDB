@@ -12,18 +12,39 @@
     #filter-div {
         width: 25%;
         float: left;
-        background-color: red;
         margin: 5px;
         padding: 10px;
     }
 
     #film-list-div {
-        width: 70%;
+        width: 65%;
         float: left;
-        background-color: blue;
         margin: 5px;
-        height: 100px;
     }
+
+    .star {
+        visibility: hidden;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: 15px;
+        margin-left:10px;
+    }
+
+    .star:before {
+        content: "\2606";
+        position: absolute;
+        visibility: visible;
+    }
+
+    .star:checked:before {
+        content: "\2605";
+        position: absolute;
+    }
+
+    .form-group, .row{
+        padding: 5px;
+    }
+
 </style>
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -64,11 +85,67 @@
 <!-- Film Section-->
 <div>
     <!-- Filter Part, Left Side-->
-    <div id="filter-div">
+    <div id="filter-div" class="border border-primary rounded">
         <form action="">
             <div class="form-group">
                 <label for="formGroupExampleInput" class="font-weight-bold">Search</label>
                 <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Search">
+            </div>
+
+            <div class="form-group">
+                <label for="Category" class="font-weight-bold">Category</label>
+                <br />
+                <select class="custom-select" id="Category">
+                    <option selected>All Categories</option>
+                    <option value="1">Categorie 1</option>
+                    <option value="2">Categorie 2</option>
+                    <option value="3">Categorie 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold">Rate</label>
+                <br>
+                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                    <input class="star" type="checkbox" id="inlineCheckbox1" value="option1">
+                    <label class="form-check-label" for="inlineCheckbox1">1</label>
+                </div>
+                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                    <input class="star" type="checkbox" id="inlineCheckbox2" value="option2">
+                    <label class="form-check-label" for="inlineCheckbox2">2</label>
+                </div>
+                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                    <input class="star" type="checkbox" id="inlineCheckbox3" value="option3">
+                    <label class="form-check-label" for="inlineCheckbox3">3</label>
+                </div>
+                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                    <input class="star" type="checkbox" id="inlineCheckbox4" value="option4">
+                    <label class="form-check-label" for="inlineCheckbox4">4</label>
+                </div>
+                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                    <input class="star" type="checkbox" id="inlineCheckbox5" value="option5">
+                    <label class="form-check-label" for="inlineCheckbox5">5</label>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="font-weight-bold">Produce Year</label>
+                    <input type="email" class="form-control" id="inputEmail4" placeholder="min">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4">&nbsp;</label>
+                    <input type="password" class="form-control" id="inputPassword4" placeholder="max">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="hourmin" class="font-weight-bold">Minute</label>
+                    <input type="email" class="form-control" id="hourmin" placeholder="min">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="hourmax">&nbsp;</label>
+                    <input type="password" class="form-control" id="hourmax" placeholder="max">
+                </div>
             </div>
         </form>
     </div>
