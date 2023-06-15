@@ -8,6 +8,22 @@
         height: 400px; /* İstenilen boyutu burada belirleyebilirsiniz */
         object-fit: cover;
     }
+
+    #filter-div {
+        width: 25%;
+        float: left;
+        background-color: red;
+        margin: 5px;
+        height: 100px;
+    }
+
+    #film-list-div {
+        width: 65%;
+        float: left;
+        background-color: blue;
+        margin: 5px;
+        height: 100px;
+    }
 </style>
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -44,4 +60,15 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
+</div>
+<!-- Film Section-->
+<div>
+    <!-- Filter Part, Left Side-->
+    <div id="filter-div">
+    </div>
+
+    <!-- Film List, Right Side -->
+    <div id="film-list-div">
+    </div>
+
 </div>
