@@ -1,0 +1,30 @@
+﻿@model MovieDB.Entities.Movie
+
+<style>
+    .movie-image {
+        max-width: 400px;
+        max-height: 400px;
+    }
+</style>
+
+<h2>@Model.Title</h2>
+
+<div>
+    <img src="data:image;base64,@Convert.ToBase64String(Model.Image)" alt="@Model.Title" class="movie-image" />
+</div>
+
+<p>@Model.Description</p>
+<p>Artists: @Model.Artists</p>
+<p>Director: @Model.Director</p>
+<p>Type: @Model.Type</p>
+<p>Year: @Model.ProduceYear</p>
+<p>Rate: @Model.Rate</p>
+<p>Duration: @Model.Hour hours @Model.Minute minutes</p>
+
+<button onclick="goBack()">Go Back</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

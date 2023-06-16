@@ -45,7 +45,16 @@ namespace MovieDB.Controllers
             }
             return commentedMovies;
         }
+        public IActionResult Details(Guid movieId)
+        {
+            Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
+            if (movie == null)
+            {
+                return NotFound(); // Return a 404 Not Found error if the movie is not found
+            }
 
+            return View(movie);
+        }
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
@@ -75,7 +84,7 @@ namespace MovieDB.Controllers
             };
 
             _databaseContext.Add(comment);
-            _databaseContext.SaveChanges(); 
+            _databaseContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -84,7 +93,7 @@ namespace MovieDB.Controllers
         {
             Comment comment;
             comment = _databaseContext.Comments.SingleOrDefault(comment => comment.Id == commentId);
-            if(comment != null)
+            if (comment != null)
             {
                 Guid movieUserId = comment.MovieUserId;
                 _databaseContext.Remove(comment);
