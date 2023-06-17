@@ -10,10 +10,7 @@ namespace MovieDB.Models
         public string ProduceYearMax { get; set; }
         public string MinuteMin { get; set; }
         public string MinuteMax { get; set; }
-        public bool Rate1 { get; set; }
-        public bool Rate2 { get; set; }
-        public bool Rate3 { get; set; }
-        public bool Rate4 { get; set; }
-        public bool Rate5 { get; set; }
+        public List<bool> Rates { get; set; }
+        public List<string> AllCategories { get; set; }
     }
 }

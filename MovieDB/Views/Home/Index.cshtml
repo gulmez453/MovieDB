@@ -92,7 +92,7 @@
         <form method="POST">
             <div class="form-group">
                 <label for="filterSearchText" class="font-weight-bold">filterSearchText</label>
-                <input type="text" name="filterSearchText" class="form-control" id="filterSearchText" placeholder="filterSearchText">
+                <input type="text" name="filterSearchText" class="form-control" id="filterSearchText" placeholder="filterSearchText" value="@Model.FilterViewModel.Search">
 
             </div>
             
@@ -100,58 +100,60 @@
                 <label for="Category" class="font-weight-bold">Category</label>
                 <br />
                 <select class="custom-select" name="Category">
-                    <option selected>All Categories</option>
-                    <option value="Action">Action</option>
-                    <option value="Drama">Drama</option>
-                    <option value="Comedia">Comedia</option>
-                    <option value="Adventure">Adventure</option>
-                    <option value="Cartoon">Cartoon</option>
+                    <option value="All Categories">All Categories</option>
+                    @foreach(string category in Model.FilterViewModel.AllCategories)
+                    {
+                        if(category == Model.FilterViewModel.Category)
+                        {
+                            <option selected value="@category">@category</option>
+                        }
+                        else
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    }
 
                 </select>
             </div>
             <div class="form-group">
                 <label class="font-weight-bold">Rate</label>
                 <br>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" name="Rate1" value="option1">
-                    <label class="form-check-label" for="Rate1">1</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" name="Rate2" value="option2">
-                    <label class="form-check-label" for="Rate2">2</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" name="Rate3" value="option3">
-                    <label class="form-check-label" for="Rate3">3</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" name="Rate4" value="option4">
-                    <label class="form-check-label" for="Rate4">4</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" name="Rate5" value="option5">
-                    <label class="form-check-label" for="Rate5">5</label>
-                </div>
+                @for(int i = 1; i <= 5; i++)
+                {
+                        if (Model.FilterViewModel.Rates[i-1]){
+                            <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                                <input checked class="star" type="checkbox" name="Rate" value="@i" id="Rate">
+                                <label class="form-check-label" for="Rate@i">@i</label>
+                            </div>
+                        }
+                        else{
+                            <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                                <input class="star" type="checkbox" name="Rate" value="@i" id="Rate">
+                                <label class="form-check-label" for="Rate@i">@i</label>
+                            </div>
+                        }
+                }
+
             </div>
             <br>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="ProduceYearMin" class="font-weight-bold">Produce Year</label>
-                    <input type="text" class="form-control" name="ProduceYearMin" placeholder="min">
+                    <input type="text" class="form-control" name="ProduceYearMin" placeholder="min" value="@Model.FilterViewModel.ProduceYearMin">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="ProduceYearMax">&nbsp;</label>
-                    <input type="text" class="form-control" name="ProduceYearMax" placeholder="max">
+                    <input type="text" class="form-control" name="ProduceYearMax" placeholder="max" value="@Model.FilterViewModel.ProduceYearMax">
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="MinuteMin" class="font-weight-bold">Minute</label>
-                    <input type="text" class="form-control" name="MinuteMin" placeholder="min">
+                    <input type="text" class="form-control" name="MinuteMin" placeholder="min" value="@Model.FilterViewModel.MinuteMin">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="MinuteMax">&nbsp;</label>
-                    <input type="text" class="form-control" name="MinuteMax" placeholder="max">
+                    <input type="text" class="form-control" name="MinuteMax" placeholder="max" value="@Model.FilterViewModel.MinuteMax">
                 </div>
             </div>
 

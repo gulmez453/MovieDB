@@ -4,7 +4,7 @@ namespace MovieDB.Models
 {
     public class MovieFilterViewModel
     {
-        public FilterViewModel FilterViewModell { get; set; }
+        public FilterViewModel FilterViewModel { get; set; }
         public List<MovieDB.Entities.Movie> MovieViewModel { get; set; }
     }
 }

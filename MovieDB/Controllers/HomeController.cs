@@ -11,12 +11,12 @@ namespace MovieDB.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DatabaseContext _databaseContext;
-
+        private List<string> AllCategories;
         public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
         {
             _logger = logger;
             _databaseContext = databaseContext;
-        
+            AllCategories = this.GetCategories();
         }
         [AllowAnonymous]
         public IActionResult GetImage(Guid movieId)
@@ -35,8 +35,8 @@ namespace MovieDB.Controllers
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
-
-            MovieFilterViewModel movieFilterViewModel = new MovieFilterViewModel { MovieViewModel = allMovies };
+            FilterViewModel filterViewModel = new() { AllCategories = this.AllCategories, Rates = new List<bool> { true, true, true, true, true } };
+            MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies , FilterViewModel=filterViewModel};
 
             return View(movieFilterViewModel);
         }
@@ -45,9 +45,16 @@ namespace MovieDB.Controllers
         [AllowAnonymous]
         public IActionResult Index(
             string filterSearchText, string Category, string ProduceYearMin,string ProduceYearMax,
-            string MinuteMin, string MinuteMax, bool Rate1, bool Rate2, bool Rate3, bool Rate4, bool Rate5)
+            string MinuteMin, string MinuteMax, string[] Rate)
         {
-            FilterViewModel filterViewModel = new FilterViewModel
+            // Preparing Rates
+            List<bool> Rates = new() { false, false, false, false, false};
+            foreach(string r in Rate)
+            {
+                Rates[int.Parse(r)-1] = true;
+            }
+
+            FilterViewModel filterViewModel = new()
             {
                 Search = filterSearchText,
                 Category = Category,
@@ -55,18 +62,16 @@ namespace MovieDB.Controllers
                 ProduceYearMax = ProduceYearMax,
                 MinuteMin = MinuteMin,
                 MinuteMax = MinuteMax,
-                Rate1 = Rate1,
-                Rate2 = Rate2,
-                Rate3 = Rate3,
-                Rate4 = Rate4,
-                Rate5 = Rate5
+                Rates = Rates,
+                AllCategories = this.AllCategories
             };
 
             List<Movie> filteredMovies = this.FilterMovies(filterViewModel);
 
-            MovieFilterViewModel movieFilterViewModel = new MovieFilterViewModel {
+            MovieFilterViewModel movieFilterViewModel = new()
+            {
                 MovieViewModel = filteredMovies ,
-                FilterViewModell = filterViewModel
+                FilterViewModel = filterViewModel
             };
 
             return View(movieFilterViewModel);
@@ -82,6 +87,16 @@ namespace MovieDB.Controllers
             return allMovies;
         }
 
+        private List<string> GetCategories()
+        {
+            List<Movie> allMovies = _databaseContext.Movies.ToList();
+            HashSet<string> categorySet = new();
+            foreach(Movie movie in allMovies)
+            {
+                categorySet.Add(movie.Type);
+            }
+            return new List<string>(categorySet);
+        }
 
         [AllowAnonymous]
         public IActionResult Privacy()
