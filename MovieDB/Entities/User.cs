@@ -25,6 +25,6 @@ namespace MovieDB.Entities
 
         [Required]
         [StringLength(30)]
-        public string Role { get; set; } = "admin";
+        public string Role { get; set; } = "user";
     }
 }

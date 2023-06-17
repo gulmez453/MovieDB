@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+.details_image {
+    float: left;
+    width:22%;
+    margin: 18px;
+}
+.details_table {
+    float: left;
+    width: 70%;
+    margin: 10px;
+}
+.movie-image{
+    width:100%;
+}
