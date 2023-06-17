@@ -44,19 +44,21 @@ namespace MovieDB.Controllers
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Index(
-            string filterSearchText, string Category, string ProduceYearMin,string ProduceYearMax,
-            string MinuteMin, string MinuteMax, string[] Rate)
+            string filterSearchText, string actorSearch, string directorSearch, string Category,
+            string ProduceYearMin, string ProduceYearMax,string MinuteMin, string MinuteMax, string[] Rate)
         {
             // Preparing Rates
-            List<bool> Rates = new() { false, false, false, false, false};
-            foreach(string r in Rate)
+            List<bool> Rates = new() { false, false, false, false, false };
+            foreach (string r in Rate)
             {
-                Rates[int.Parse(r)-1] = true;
+                Rates[int.Parse(r) - 1] = true;
             }
 
             FilterViewModel filterViewModel = new()
             {
                 Search = filterSearchText,
+                ActorSearch = actorSearch,
+                DirectorSearch = directorSearch,
                 Category = Category,
                 ProduceYearMin = ProduceYearMin,
                 ProduceYearMax = ProduceYearMax,
@@ -70,7 +72,7 @@ namespace MovieDB.Controllers
 
             MovieFilterViewModel movieFilterViewModel = new()
             {
-                MovieViewModel = filteredMovies ,
+                MovieViewModel = filteredMovies,
                 FilterViewModel = filterViewModel
             };
 
@@ -83,6 +85,10 @@ namespace MovieDB.Controllers
 
             if (filterViewModel.Search != null && filterViewModel.Search != "")
                 x = x.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim()));
+            if (filterViewModel.ActorSearch != null && filterViewModel.ActorSearch != "")
+                x = x.Where(movie => movie.Artists.Contains(filterViewModel.ActorSearch.Trim()));
+            if (filterViewModel.DirectorSearch != null && filterViewModel.DirectorSearch != "")
+                x = x.Where(movie => movie.Director.Contains(filterViewModel.DirectorSearch.Trim()));
             if (filterViewModel.Category != "All Categories")
                 x = x.Where(movie => movie.Type.Equals(filterViewModel.Category));
             if (filterViewModel.ProduceYearMin != null && filterViewModel.ProduceYearMin != "")
@@ -98,7 +104,7 @@ namespace MovieDB.Controllers
             (filterViewModel.Rates[1] && movie.Rate == 2) ||
             (filterViewModel.Rates[2] && movie.Rate == 3) ||
             (filterViewModel.Rates[3] && movie.Rate == 4) ||
-            (filterViewModel.Rates[4] && movie.Rate == 5)) ;
+            (filterViewModel.Rates[4] && movie.Rate == 5));
 
             return x.ToList();
         }

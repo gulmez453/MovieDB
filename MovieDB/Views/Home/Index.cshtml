@@ -26,30 +26,29 @@
         font-size: 20px;
         cursor: pointer;
         margin-top: 15px;
-        margin-left:10px;
+        margin-left: 10px;
     }
 
-    .star:before {
-        content: "\2606";
-        position: absolute;
-        visibility: visible;
-    }
+        .star:before {
+            content: "\2606";
+            position: absolute;
+            visibility: visible;
+        }
 
-    .star:checked:before {
-        content: "\2605";
-        position: absolute;
-    }
+        .star:checked:before {
+            content: "\2605";
+            position: absolute;
+        }
 
-    .form-group, .row{
+    .form-group, .row {
         padding: 5px;
     }
-
 
 </style>
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        @for(var i = 0; i < Model.MovieViewModel.Count; i++)
+        @for (var i = 0; i < Model.MovieViewModel.Count; i++)
         {
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@(i + 1)" aria-label="Slide @(i + 1)"></button>
         }
@@ -91,48 +90,62 @@
 
         <form method="POST">
             <div class="form-group">
-                <label for="filterSearchText" class="font-weight-bold">filterSearchText</label>
-                <input type="text" name="filterSearchText" class="form-control" id="filterSearchText" placeholder="filterSearchText" value="@Model.FilterViewModel.Search">
+                <label for="filterSearchText" class="font-weight-bold">Search Movie</label>
+                <input type="text" name="filterSearchText" class="form-control" id="filterSearchText" placeholder="Search Movie" value="@Model.FilterViewModel.Search">
 
             </div>
-            
+
+            <div class="form-group">
+                <label for="directorSearch" class="font-weight-bold">Search Director</label>
+                <input type="text" name="directorSearch" class="form-control" id="directorSearch" placeholder="Search Director" value="@Model.FilterViewModel.DirectorSearch">
+
+            </div>
+
+            <div class="form-group">
+                <label for="actorSearch" class="font-weight-bold">Search Artist</label>
+                <input type="text" name="actorSearch" class="form-control" id="actorSearch" placeholder="Search Artist" value="@Model.FilterViewModel.ActorSearch">
+
+            </div>
+
             <div class="form-group">
                 <label for="Category" class="font-weight-bold">Category</label>
                 <br />
                 <select class="custom-select" name="Category">
                     <option value="All Categories">All Categories</option>
-                    @foreach(string category in Model.FilterViewModel.AllCategories)
-                    {
-                        if(category == Model.FilterViewModel.Category)
-                        {
+@foreach (string category in Model.FilterViewModel.AllCategories)
+{
+    if (category == Model.FilterViewModel.Category)
+    {
                             <option selected value="@category">@category</option>
-                        }
-                        else
-                        {
+    }
+    else
+    {
                             <option value="@category">@category</option>
-                        }
-                    }
+    }
+}
 
                 </select>
             </div>
             <div class="form-group">
                 <label class="font-weight-bold">Rate</label>
                 <br>
-                @for(int i = 1; i <= 5; i++)
-                {
-                        if (Model.FilterViewModel.Rates[i-1]){
-                            <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                                <input checked class="star" type="checkbox" name="Rate" value="@i" id="Rate">
-                                <label class="form-check-label" for="Rate@i">@i</label>
-                            </div>
-                        }
-                        else{
-                            <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                                <input class="star" type="checkbox" name="Rate" value="@i" id="Rate">
-                                <label class="form-check-label" for="Rate@i">@i</label>
-                            </div>
-                        }
-                }
+@for (int i = 1; i <= 5; i++)
+{
+    if (Model.FilterViewModel.Rates[i - 1])
+    {
+                        <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                            <input checked class="star" type="checkbox" name="Rate" value="@i" id="Rate">
+                            <label class="form-check-label" for="Rate@i">@i</label>
+                        </div>
+    }
+    else
+    {
+                        <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                            <input class="star" type="checkbox" name="Rate" value="@i" id="Rate">
+                            <label class="form-check-label" for="Rate@i">@i</label>
+                        </div>
+    }
+}
 
             </div>
             <br>
@@ -164,10 +177,10 @@
     <!-- Film List, Right Side -->
     <div id="film-list-div" class="border border-danger rounded container mx-auto mt-4">
         <div class="row">
-            @for(int i =0 ; i < 5; i++)
-            {
+@for (int i = 0; i < 5; i++)
+{
     @foreach (var movie in Model.MovieViewModel)
-                {
+    {
                     <div class="col-md-3">
                         <div class="card" style="width:180px; height:330px;">
                             <a href="@Url.Action("Details", "Movie", new { movieId = movie.Id })">
@@ -175,20 +188,20 @@
                             </a>
                             <div class="card-body">
                                 <h6 class="card-title" alt="@movie.Title" style="max-width: 150px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
-                                    @movie.Title
+                        @movie.Title
                                 </h6>
                             </div>
                         </div>
                     </div>
 
-                }
-            }
-            
-            
+    }
+}
+
+
         </div>
 
     </div>
 
-</div>
+    </div>
 
 
