@@ -79,23 +79,33 @@ namespace MovieDB.Controllers
 
         private List<Movie> FilterMovies(FilterViewModel filterViewModel)
         {
-             List<Movie> allMovies;
+            IQueryable<Movie> x = _databaseContext.Movies.AsQueryable();
+
             if (filterViewModel.Search != null && filterViewModel.Search != "")
-                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim())).ToList();
-            else
-                allMovies = _databaseContext.Movies.ToList();
-            return allMovies;
+                x = x.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim()));
+            if (filterViewModel.Category != "All Categories")
+                x = x.Where(movie => movie.Type.Equals(filterViewModel.Category));
+            if (filterViewModel.ProduceYearMin != null && filterViewModel.ProduceYearMin != "")
+                x = x.Where(movie => movie.ProduceYear >= int.Parse(filterViewModel.ProduceYearMin));
+            if (filterViewModel.ProduceYearMax != null && filterViewModel.ProduceYearMax != "")
+                x = x.Where(movie => movie.ProduceYear <= int.Parse(filterViewModel.ProduceYearMax));
+            if (filterViewModel.MinuteMin != null && filterViewModel.MinuteMin != "")
+                x = x.Where(movie => movie.Hour * 60 + movie.Minute >= int.Parse(filterViewModel.MinuteMin));
+            if (filterViewModel.MinuteMax != null && filterViewModel.MinuteMax != "")
+                x = x.Where(movie => movie.Hour * 60 + movie.Minute <= int.Parse(filterViewModel.MinuteMax));
+            x = x.Where(movie =>
+            (filterViewModel.Rates[0] && movie.Rate == 1) ||
+            (filterViewModel.Rates[1] && movie.Rate == 2) ||
+            (filterViewModel.Rates[2] && movie.Rate == 3) ||
+            (filterViewModel.Rates[3] && movie.Rate == 4) ||
+            (filterViewModel.Rates[4] && movie.Rate == 5)) ;
+
+            return x.ToList();
         }
 
         private List<string> GetCategories()
         {
-            List<Movie> allMovies = _databaseContext.Movies.ToList();
-            HashSet<string> categorySet = new();
-            foreach(Movie movie in allMovies)
-            {
-                categorySet.Add(movie.Type);
-            }
-            return new List<string>(categorySet);
+            return _databaseContext.Movies.Select(movie => movie.Type).Distinct().ToList();
         }
 
         [AllowAnonymous]
