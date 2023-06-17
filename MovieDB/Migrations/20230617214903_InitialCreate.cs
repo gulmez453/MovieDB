@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MovieDB.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,16 +13,10 @@ namespace MovieDB.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-<<<<<<<< HEAD:MovieDB/Migrations/20230617203658_InitialCreate.cs
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MovieUserId = table.Column<int>(type: "int", nullable: false),
-                    CommentText = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-========
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MovieUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CommentText = table.Column<string>(type: "nvarchar(250)", maxLength: 100, nullable: false),
->>>>>>>> 202b9ff603e1a7d33f65e801b16d0b99370ae29c:MovieDB/Migrations/20230615224909_initial.cs
+                    CommentText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -36,16 +30,17 @@ namespace MovieDB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Artists = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Director = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Artists = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Director = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ProduceYear = table.Column<int>(type: "int", nullable: false),
                     Rate = table.Column<int>(type: "int", nullable: false),
                     Hour = table.Column<int>(type: "int", nullable: false),
                     Minute = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    fragman = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
