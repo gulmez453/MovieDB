@@ -139,15 +139,7 @@ namespace MovieDB.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-         [AllowAnonymous]
-    [HttpGet]
-    public IActionResult Contact()
-    {
-        return View();
-    }
-
-    [AllowAnonymous]
-    [HttpPost]
+     
     public IActionResult Contact(ContactViewModel model)
     {
         if (ModelState.IsValid)
