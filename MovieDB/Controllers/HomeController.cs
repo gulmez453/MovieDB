@@ -31,10 +31,32 @@ namespace MovieDB.Controllers
             return File("~/images/default.jpg", "image/jpeg"); // Replace with your default image path and content type
         }
         [AllowAnonymous]
+        [HttpGet]
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
-            return View(allMovies);
+
+            MovieFilterViewModel movieFilterViewModel = new MovieFilterViewModel { MovieViewModel = allMovies };
+
+            return View(movieFilterViewModel);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Index(string filterSearchText, string Category, string ProduceYearMin,
+            string ProduceYearMax, string MinuteMin, string MinuteMax, bool Rate1, bool Rate2,
+            bool Rate3, bool Rate4, bool Rate5)
+        {
+            
+            List<Movie> allMovies;
+            if (filterSearchText != null && filterSearchText != "")
+                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(filterSearchText.Trim())).ToList();
+            else
+                allMovies = _databaseContext.Movies.ToList();
+
+            MovieFilterViewModel movieFilterViewModel = new MovieFilterViewModel { MovieViewModel = allMovies };
+
+            return View(movieFilterViewModel);
         }
 
         [AllowAnonymous]
