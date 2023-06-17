@@ -65,7 +65,7 @@
         @foreach (var movie in Model.MovieViewModel)
         {
             <div class="carousel-item">
-                <img src="@Url.Action("GetImage", new { movieId = movie.Id })" class="d-block w-100" alt="...">
+                <a href="@Url.Action("Details", "Movie", new { movieId = movie.Id })"><img src="@Url.Action("GetImage", new { movieId = movie.Id })" class="d-block w-100" alt="..."></a>
                 <div class="carousel-caption d-none d-md-block">
                     <h5>@movie.Title</h5>
                     <p>@movie.Description</p>
@@ -170,7 +170,7 @@
                 {
                     <div class="col-md-3">
                         <div class="card" style="width:180px; height:330px;">
-                            <a href="#">
+                            <a href="@Url.Action("Details", "Movie", new { movieId = movie.Id })">
                                 <img class="card-img-top" src="@Url.Action("GetImage", new { movieId = movie.Id })" alt="@movie.Title" style="width:180px; height:280px">
                             </a>
                             <div class="card-body">
