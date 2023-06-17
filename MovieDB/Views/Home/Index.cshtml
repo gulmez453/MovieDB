@@ -1,7 +1,8 @@
-﻿@model List<MovieDB.Entities.Movie>
+﻿@model MovieFilterViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
+
 <style>
     .carousel-item img {
         width: 100%;
@@ -94,7 +95,7 @@
                 <input type="text" name="filterSearchText" class="form-control" id="filterSearchText" placeholder="filterSearchText">
 
             </div>
-
+            
             <div class="form-group">
                 <label for="Category" class="font-weight-bold">Category</label>
                 <br />
