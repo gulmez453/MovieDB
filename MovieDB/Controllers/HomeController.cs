@@ -125,10 +125,7 @@ namespace MovieDB.Controllers
             return View();
         }
 
-        public IActionResult Contact()
-        {
-            return View();
-        }
+       
 
 
         [AllowAnonymous]
