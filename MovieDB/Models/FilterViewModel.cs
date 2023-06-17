@@ -15,7 +15,5 @@ namespace MovieDB.Models
         public bool Rate3 { get; set; }
         public bool Rate4 { get; set; }
         public bool Rate5 { get; set; }
-
-
     }
 }

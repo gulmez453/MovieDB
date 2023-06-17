@@ -43,21 +43,45 @@ namespace MovieDB.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Index(string filterSearchText, string Category, string ProduceYearMin,
-            string ProduceYearMax, string MinuteMin, string MinuteMax, bool Rate1, bool Rate2,
-            bool Rate3, bool Rate4, bool Rate5)
+        public IActionResult Index(
+            string filterSearchText, string Category, string ProduceYearMin,string ProduceYearMax,
+            string MinuteMin, string MinuteMax, bool Rate1, bool Rate2, bool Rate3, bool Rate4, bool Rate5)
         {
-            
-            List<Movie> allMovies;
-            if (filterSearchText != null && filterSearchText != "")
-                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(filterSearchText.Trim())).ToList();
-            else
-                allMovies = _databaseContext.Movies.ToList();
+            FilterViewModel filterViewModel = new FilterViewModel
+            {
+                Search = filterSearchText,
+                Category = Category,
+                ProduceYearMin = ProduceYearMin,
+                ProduceYearMax = ProduceYearMax,
+                MinuteMin = MinuteMin,
+                MinuteMax = MinuteMax,
+                Rate1 = Rate1,
+                Rate2 = Rate2,
+                Rate3 = Rate3,
+                Rate4 = Rate4,
+                Rate5 = Rate5
+            };
 
-            MovieFilterViewModel movieFilterViewModel = new MovieFilterViewModel { MovieViewModel = allMovies };
+            List<Movie> filteredMovies = this.FilterMovies(filterViewModel);
+
+            MovieFilterViewModel movieFilterViewModel = new MovieFilterViewModel {
+                MovieViewModel = filteredMovies ,
+                FilterViewModell = filterViewModel
+            };
 
             return View(movieFilterViewModel);
         }
+
+        private List<Movie> FilterMovies(FilterViewModel filterViewModel)
+        {
+             List<Movie> allMovies;
+            if (filterViewModel.Search != null && filterViewModel.Search != "")
+                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim())).ToList();
+            else
+                allMovies = _databaseContext.Movies.ToList();
+            return allMovies;
+        }
+
 
         [AllowAnonymous]
         public IActionResult Privacy()

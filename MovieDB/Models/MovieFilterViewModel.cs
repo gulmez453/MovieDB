@@ -6,6 +6,5 @@ namespace MovieDB.Models
     {
         public FilterViewModel FilterViewModell { get; set; }
         public List<MovieDB.Entities.Movie> MovieViewModel { get; set; }
-
     }
 }
