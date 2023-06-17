@@ -11,12 +11,12 @@ namespace MovieDB.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DatabaseContext _databaseContext;
-
+        private List<string> AllCategories;
         public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
         {
             _logger = logger;
             _databaseContext = databaseContext;
-        
+            AllCategories = this.GetCategories();
         }
         [AllowAnonymous]
         public IActionResult GetImage(Guid movieId)
@@ -31,10 +31,71 @@ namespace MovieDB.Controllers
             return File("~/images/default.jpg", "image/jpeg"); // Replace with your default image path and content type
         }
         [AllowAnonymous]
+        [HttpGet]
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
-            return View(allMovies);
+            FilterViewModel filterViewModel = new() { AllCategories = this.AllCategories, Rates = new List<bool> { true, true, true, true, true } };
+            MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies , FilterViewModel=filterViewModel};
+
+            return View(movieFilterViewModel);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Index(
+            string filterSearchText, string Category, string ProduceYearMin,string ProduceYearMax,
+            string MinuteMin, string MinuteMax, string[] Rate)
+        {
+            // Preparing Rates
+            List<bool> Rates = new() { false, false, false, false, false};
+            foreach(string r in Rate)
+            {
+                Rates[int.Parse(r)-1] = true;
+            }
+
+            FilterViewModel filterViewModel = new()
+            {
+                Search = filterSearchText,
+                Category = Category,
+                ProduceYearMin = ProduceYearMin,
+                ProduceYearMax = ProduceYearMax,
+                MinuteMin = MinuteMin,
+                MinuteMax = MinuteMax,
+                Rates = Rates,
+                AllCategories = this.AllCategories
+            };
+
+            List<Movie> filteredMovies = this.FilterMovies(filterViewModel);
+
+            MovieFilterViewModel movieFilterViewModel = new()
+            {
+                MovieViewModel = filteredMovies ,
+                FilterViewModel = filterViewModel
+            };
+
+            return View(movieFilterViewModel);
+        }
+
+        private List<Movie> FilterMovies(FilterViewModel filterViewModel)
+        {
+             List<Movie> allMovies;
+            if (filterViewModel.Search != null && filterViewModel.Search != "")
+                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim())).ToList();
+            else
+                allMovies = _databaseContext.Movies.ToList();
+            return allMovies;
+        }
+
+        private List<string> GetCategories()
+        {
+            List<Movie> allMovies = _databaseContext.Movies.ToList();
+            HashSet<string> categorySet = new();
+            foreach(Movie movie in allMovies)
+            {
+                categorySet.Add(movie.Type);
+            }
+            return new List<string>(categorySet);
         }
 
         [AllowAnonymous]

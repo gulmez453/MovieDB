@@ -1,7 +1,8 @@
-﻿@model List<MovieDB.Entities.Movie>
+﻿@model MovieFilterViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
+
 <style>
     .carousel-item img {
         width: 100%;
@@ -48,7 +49,7 @@
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        @for(var i = 0; i < Model.Count; i++)
+        @for(var i = 0; i < Model.MovieViewModel.Count; i++)
         {
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@(i + 1)" aria-label="Slide @(i + 1)"></button>
         }
@@ -61,7 +62,7 @@
                 <p class="text-black">You can find and look your movies which you search in this website .</p>
             </div>
         </div>
-        @foreach (var movie in Model)
+        @foreach (var movie in Model.MovieViewModel)
         {
             <div class="carousel-item">
                 <img src="@Url.Action("GetImage", new { movieId = movie.Id })" class="d-block w-100" alt="...">
@@ -87,67 +88,76 @@
 <div">
     <!-- Filter Part, Left Side-->
     <div id="filter-div" class="border border-primary rounded ">
-        <form action="">
-            <div class="form-group">
-                <label for="formGroupExampleInput" class="font-weight-bold">Search</label>
-                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Search">
-            </div>
 
+        <form method="POST">
+            <div class="form-group">
+                <label for="filterSearchText" class="font-weight-bold">filterSearchText</label>
+                <input type="text" name="filterSearchText" class="form-control" id="filterSearchText" placeholder="filterSearchText" value="@Model.FilterViewModel.Search">
+
+            </div>
+            
             <div class="form-group">
                 <label for="Category" class="font-weight-bold">Category</label>
                 <br />
-                <select class="custom-select" id="Category">
-                    <option selected>All Categories</option>
-                    <option value="1">Categorie 1</option>
-                    <option value="2">Categorie 2</option>
-                    <option value="3">Categorie 3</option>
+                <select class="custom-select" name="Category">
+                    <option value="All Categories">All Categories</option>
+                    @foreach(string category in Model.FilterViewModel.AllCategories)
+                    {
+                        if(category == Model.FilterViewModel.Category)
+                        {
+                            <option selected value="@category">@category</option>
+                        }
+                        else
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    }
+
                 </select>
             </div>
             <div class="form-group">
                 <label class="font-weight-bold">Rate</label>
                 <br>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" id="inlineCheckbox1" value="option1">
-                    <label class="form-check-label" for="inlineCheckbox1">1</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" id="inlineCheckbox2" value="option2">
-                    <label class="form-check-label" for="inlineCheckbox2">2</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" id="inlineCheckbox3" value="option3">
-                    <label class="form-check-label" for="inlineCheckbox3">3</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" id="inlineCheckbox4" value="option4">
-                    <label class="form-check-label" for="inlineCheckbox4">4</label>
-                </div>
-                <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
-                    <input class="star" type="checkbox" id="inlineCheckbox5" value="option5">
-                    <label class="form-check-label" for="inlineCheckbox5">5</label>
-                </div>
+                @for(int i = 1; i <= 5; i++)
+                {
+                        if (Model.FilterViewModel.Rates[i-1]){
+                            <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                                <input checked class="star" type="checkbox" name="Rate" value="@i" id="Rate">
+                                <label class="form-check-label" for="Rate@i">@i</label>
+                            </div>
+                        }
+                        else{
+                            <div class="form-check form-check-inline" style="margin: 0px; padding: 0px">
+                                <input class="star" type="checkbox" name="Rate" value="@i" id="Rate">
+                                <label class="form-check-label" for="Rate@i">@i</label>
+                            </div>
+                        }
+                }
+
             </div>
             <br>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4" class="font-weight-bold">Produce Year</label>
-                    <input type="email" class="form-control" id="inputEmail4" placeholder="min">
+                    <label for="ProduceYearMin" class="font-weight-bold">Produce Year</label>
+                    <input type="text" class="form-control" name="ProduceYearMin" placeholder="min" value="@Model.FilterViewModel.ProduceYearMin">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputPassword4">&nbsp;</label>
-                    <input type="password" class="form-control" id="inputPassword4" placeholder="max">
+                    <label for="ProduceYearMax">&nbsp;</label>
+                    <input type="text" class="form-control" name="ProduceYearMax" placeholder="max" value="@Model.FilterViewModel.ProduceYearMax">
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="hourmin" class="font-weight-bold">Minute</label>
-                    <input type="email" class="form-control" id="hourmin" placeholder="min">
+                    <label for="MinuteMin" class="font-weight-bold">Minute</label>
+                    <input type="text" class="form-control" name="MinuteMin" placeholder="min" value="@Model.FilterViewModel.MinuteMin">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="hourmax">&nbsp;</label>
-                    <input type="password" class="form-control" id="hourmax" placeholder="max">
+                    <label for="MinuteMax">&nbsp;</label>
+                    <input type="text" class="form-control" name="MinuteMax" placeholder="max" value="@Model.FilterViewModel.MinuteMax">
                 </div>
             </div>
+
+            <button type="submit" class="btn btn-primary">Filter</button>
         </form>
     </div>
 
@@ -156,7 +166,7 @@
         <div class="row">
             @for(int i =0 ; i < 5; i++)
             {
-                @foreach (var movie in Model)
+    @foreach (var movie in Model.MovieViewModel)
                 {
                     <div class="col-md-3">
                         <div class="card" style="width:180px; height:330px;">
