@@ -1,6 +1,6 @@
 ﻿@model MovieDB.Models.MovieComments
 
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="~/css/site.css" rel="stylesheet" />
 <script src="~/js/site.js"></script>
 <div class="card">
@@ -26,7 +26,33 @@
                 </tr>
                 <tr>
                     <td>Rate: </td>
-                    <td>Yıldız</td>
+                    <td>
+                        <div class="col-md-7 d-flex flex-nowrap">
+                            @{
+                                int averageRate = 0;
+                                foreach (var userRate in Model.UserRates)
+                                {
+                                    averageRate += userRate.Rate.RateNum;
+                                }
+                                if (Model.UserRates.Count != 0)
+                                    averageRate /= Model.UserRates.Count;
+
+                            }
+                            @for (int rate = 0; rate < 5; rate++)
+                            {
+                                if (rate < averageRate)
+                                {
+                                    <span class="" data-value="">&#9733;</span>
+                                }
+                                else
+                                {
+                                    <span class="" data-value="">&#9734;</span>
+                                }
+
+                            }
+                            <br />
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>Duration:</td>
@@ -55,7 +81,38 @@
 </div>
 <div class="card mt-4">
     <div class="card card-body">
-        <h4 class="modal-header mb-3">Comments</h4>
+        <div style="float:left;"><h4 class="modal-header mb-3">Comments</h4></div>
+        <div class ="col-md-7 d-flex flex-nowrap" style="float:left">
+            <form id="rateForm" method="post" asp-action="AddRate" asp-controller="Movie">
+                <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                <div class="row">
+                    <div class="col-md-5 d-flex flex-nowrap">
+                        @{
+                            int userRateValue = 0;
+                            var theuserRate = Model.UserRates.FirstOrDefault(userRate => userRate.User.Id.ToString() == User.FindFirst("id")?.Value);
+
+                            if (theuserRate != null)
+                                userRateValue = theuserRate.Rate.RateNum;
+                        }
+                        @for (int rate = 1; rate <= 5; rate++)
+                        {
+                            if (rate <= userRateValue)
+                            {
+                                <input checked class="star" type="checkbox" id="star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this)" />
+                            }
+
+                            else
+                            {
+                                <input class="star" type="checkbox" id="star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this)" />
+                            }
+                        }
+                    </div>
+                    <br />
+                    <br />
+                </div>
+
+            </form>
+        </div>
         @if (User.Identity.IsAuthenticated)
         {
             <form method="post" asp-action="AddComment" asp-controller="Movie">
@@ -115,3 +172,70 @@
 </div>
 
 
+<script>
+    function toggleCommentArea(button) {
+        var commentArea = button.closest('.card').querySelector('.comment-area');
+        commentArea.style.display = commentArea.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleCommentsView(button) {
+        var commentsView = button.closest('.card').querySelector('.comments-view');
+        commentsView.style.display = commentsView.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectStar(checkbox) {
+        var star1 = document.getElementById("star1");
+        var star2 = document.getElementById("star2");
+        var star3 = document.getElementById("star3");
+        var star4 = document.getElementById("star4");
+        var star5 = document.getElementById("star5");
+
+        if (checkbox.value == 1) {
+            star1.checked = true;
+            star2.checked = false;
+            star3.checked = false;
+            star4.checked = false;
+            star5.checked = false;
+        }
+
+        else if (checkbox.value == 2) {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = false;
+            star4.checked = false;
+            star5.checked = false;
+        }
+
+        else if (checkbox.value == 3) {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = true;
+            star4.checked = false;
+            star5.checked = false;
+        }
+
+        else if (checkbox.value == 4) {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = true;
+            star4.checked = true;
+            star5.checked = false;
+        }
+
+        else if (checkbox.value == 5) {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = true;
+            star4.checked = true;
+            star5.checked = true;
+        }
+
+        var form = document.getElementById('rateForm');
+        form.submit();
+
+
+    }
+
+
+
+</script>

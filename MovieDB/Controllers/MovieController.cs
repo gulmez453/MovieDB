@@ -5,6 +5,7 @@ using MovieDB.Models;
 using System.Collections.Generic;
 using System;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieDB.Controllers
 {
@@ -106,7 +107,7 @@ namespace MovieDB.Controllers
             List<Movie> allMovies = _databaseContext.Movies.ToList();
             return View(getMovieComments(allMovies));
         }
-
+        [Authorize]
         public IActionResult AddRate(int movieId, string[] rating)
         {
             int rateNum = rating.Length;
