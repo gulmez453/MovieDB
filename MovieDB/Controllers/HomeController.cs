@@ -32,11 +32,16 @@ namespace MovieDB.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
+       
+        
+
+
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
             FilterViewModel filterViewModel = new() { AllCategories = this.AllCategories, Rates = new List<bool> { true, true, true, true, true } };
             MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies , FilterViewModel=filterViewModel};
+
 
             return View(movieFilterViewModel);
         }
@@ -114,6 +119,12 @@ namespace MovieDB.Controllers
             return View();
         }
 
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {
@@ -127,5 +138,19 @@ namespace MovieDB.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+     
+    public IActionResult Contact(ContactViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // Process the contact form submission (e.g., send an email)
+
+            // Set a success message to be displayed on the page
+            ViewBag.Message = "Your message has been sent successfully. We will get back to you soon!";
+        }
+
+        return View(model);
+    }
     }
 }
