@@ -1,30 +1,113 @@
-﻿@model MovieDB.Entities.Movie
+﻿@model MovieDB.Models.MovieComments
 
-<style>
-    .movie-image {
-        max-width: 400px;
-        max-height: 400px;
-    }
-</style>
 
-<h2>@Model.Title</h2>
+<link href="~/css/site.css" rel="stylesheet" />
+<script src="~/js/site.js"></script>
+<div class="card">
+    <div>
+        <div class="details_image">
+            <img src="data:image;base64,@Convert.ToBase64String(Model.Movie.Image)" alt="@Model.Movie.Title" class="movie-image" />
+        </div>
+        <div class="details_table">
+            <h1 class="card-header mt-2">@Model.Movie.Title</h1>
+            <table class ="table table-bordered mt-4">
+                
+                <tr>
+                    <td>Actrisses: </td>
+                    <td>@Model.Movie.Artists</td>
+                </tr>
+                <tr>
+                    <td>Director:</td>
+                    <td>@Model.Movie.Director</td>
+                </tr>
+                <tr>
+                    <td>Category: </td>
+                    <td>@Model.Movie.Type</td>
+                </tr>
+                <tr>
+                    <td>Rate: </td>
+                    <td>Yıldız</td>
+                </tr>
+                <tr>
+                    <td>Duration:</td>
+                    <td>@Model.Movie.Hour hours @Model.Movie.Minute minutes</td>
+                </tr>
+                <tr>
+                    <td>Year: </td>
+                    <td>@Model.Movie.ProduceYear</td>
+                </tr>
+            </table>
 
-<div>
-    <img src="data:image;base64,@Convert.ToBase64String(Model.Image)" alt="@Model.Title" class="movie-image" />
+
+        </div>
+    </div>
+    <div class="card card-body m-3" >
+        <h4 class ="modal-header mb-3">Description</h4>
+        <p>@Model.Movie.Description</p>
+    </div>
+    <button class="btn btn-secondary" onclick="goBack()">Go Back</button>
+
+    </div>
+
+<div class="card mt-4">
+    <div class="card card-body">
+        <h4 class="modal-header mb-3">Comments</h4>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form method="post" asp-action="AddComment" asp-controller="Movie">
+                <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                <div class="form-group">
+                    <table class="table ">
+                      
+                            <tr>
+                               <td style="width:90%;">
+                            <textarea name="commentText" class="form-control" placeholder="Leave a comment" style="resize: none;"></textarea>
+                            </td>
+
+                            <td>
+                            <button type="submit" class="btn btn-primary mt-2">Send</button>
+                            </td>
+                            </tr>
+
+                    </table>
+                    
+                </div>
+                
+            </form>
+        }
+        else
+        {
+            <p>You must be <a href="@Url.Action("Login", "Account")">logged in</a> to post a comment.</p>
+        }
+        @foreach (var userComment in Model.UserComments)
+        {
+            <div class="card-body">
+                <div class="card p-3 bg-light">
+                    <h5 class="mt-0">@userComment.User.FullName</h5>
+                    <table>
+                        <tr>
+                            <td style="width:90%;">
+                                <p>@userComment.Comment.CommentText</p>
+                            </td>
+                            <td>
+                                @if (User.FindFirst("id")?.Value == userComment.User.Id.ToString() || User.IsInRole("admin"))
+                                {
+                                    <a type="button" class="btn btn-danger btn-sm" asp-controller="Movie" asp-action="RemoveComment" asp-route-commentId="@userComment.Comment.Id">Remove</a>
+                                }
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    
+
+                </div>
+            </div>
+        }
+
+
+
+    </div>
 </div>
 
-<p>@Model.Description</p>
-<p>Artists: @Model.Artists</p>
-<p>Director: @Model.Director</p>
-<p>Type: @Model.Type</p>
-<p>Year: @Model.ProduceYear</p>
-<p>Rate: @Model.Rate</p>
-<p>Duration: @Model.Hour hours @Model.Minute minutes</p>
 
-<button onclick="goBack()">Go Back</button>
-
-<script>
-    function goBack() {
-        window.history.back();
-    }
-</script>

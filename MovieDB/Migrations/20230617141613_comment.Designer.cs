@@ -12,8 +12,8 @@ using MovieDB.Entities;
 namespace MovieDB.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230613142053_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230617141613_comment")]
+    partial class comment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,9 +31,7 @@ namespace MovieDB.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasMaxLength(50)
