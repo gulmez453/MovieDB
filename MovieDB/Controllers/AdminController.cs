@@ -86,6 +86,7 @@ namespace MovieDB.Controllers
                     Minute = model.Minute,
                     Description = model.Description,
                     Image = imageData,
+                    fragman = model.fragman
                 };
 
                 _databaseContext.Movies.Add(movie);

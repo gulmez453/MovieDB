@@ -108,6 +108,12 @@
     </div>
 
     <div class="col-12">
+        <label asp-for="fragman" class="form-label">Fragman</label>
+        <input asp-for="fragman" type="text" class="form-control" placeholder="Youtube link">
+        <span asp-validation-for="fragman" class="text-danger small"></span>
+    </div>
+
+    <div class="col-12">
         <label asp-for="Image" class="form-label"></label>
         <input asp-for="Image" type="file" class="form-control">
         <span asp-validation-for="Image" class="text-danger small"></span>
