@@ -12,8 +12,8 @@ namespace MovieDB.Entities
         [Required]
         public int MovieUserId { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        
+        
         public string? CommentText { get; set; }
 
         [Required]

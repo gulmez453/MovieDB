@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieDB.Entities;
 using MovieDB.Models;
+using System.Collections.Generic;
+using System;
 using System.Security.Claims;
 
 namespace MovieDB.Controllers
@@ -71,7 +74,18 @@ namespace MovieDB.Controllers
             }
             return commentedMovies;
         }
-        public IActionResult Details(int movieId)
+        public IActionResult Details(Guid movieId)
+        {
+            var movie = _databaseContext.Movies.SingleOrDefault(m => m.Id == movieId);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var movieCommentsModel = getMovieComments(new List<Movie> { movie }).FirstOrDefault();
+
+        }
+        public IActionResult Details(Guid movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
             if (movie == null)
@@ -81,6 +95,7 @@ namespace MovieDB.Controllers
 
             return View(movie);
         }
+        */
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
@@ -159,7 +174,9 @@ namespace MovieDB.Controllers
             _databaseContext.Add(comment);
             _databaseContext.SaveChanges();
 
-            return RedirectToAction("Index");
+           return View("/Views/Movie/Details?movieId=" + movieId);
+
+           // return RedirectToAction("Index");
         }
 
         public IActionResult RemoveComment(int commentId)

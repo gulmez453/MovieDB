@@ -10,26 +10,26 @@ namespace MovieDB.Entities
         [Key]
         public int Id { get; set; }
 
-        [StringLength(30)]
+        [StringLength(100)]
         [Required]
         public string Title { get; set; }
 
-        [StringLength(30)]
+        [StringLength(100)]
         [Required]
         public string Artists { get; set; }
 
-        [StringLength(30)]
+        [StringLength(100)]
         [Required]
         public string Director { get; set; }
 
-        [StringLength(30)]
+        [StringLength(100)]
         [Required]
         public string Type { get; set; }
 
         [Required]
         public int ProduceYear { get; set; }
 
-        [Required]
+        
         public int Rate { get; set; }
 
         [Required]
@@ -38,12 +38,14 @@ namespace MovieDB.Entities
         [Required]
         public int Minute { get; set; }
 
-        [StringLength(30)]
+        
         [Required]
         public string Description { get; set; }
 
         [Required]
         public byte[] Image { get; set; }
+
+        public string fragman { get; set; }
 
     }
 }

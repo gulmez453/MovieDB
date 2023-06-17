@@ -32,11 +32,16 @@ namespace MovieDB.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
+       
+        
+
+
         public IActionResult Index()
         {
             List<Movie> allMovies = _databaseContext.Movies.ToList();
             FilterViewModel filterViewModel = new() { AllCategories = this.AllCategories, Rates = new List<bool> { true, true, true, true, true } };
             MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies , FilterViewModel=filterViewModel};
+
 
             return View(movieFilterViewModel);
         }
@@ -44,19 +49,21 @@ namespace MovieDB.Controllers
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Index(
-            string filterSearchText, string Category, string ProduceYearMin,string ProduceYearMax,
-            string MinuteMin, string MinuteMax, string[] Rate)
+            string filterSearchText, string actorSearch, string directorSearch, string Category,
+            string ProduceYearMin, string ProduceYearMax,string MinuteMin, string MinuteMax, string[] Rate)
         {
             // Preparing Rates
-            List<bool> Rates = new() { false, false, false, false, false};
-            foreach(string r in Rate)
+            List<bool> Rates = new() { false, false, false, false, false };
+            foreach (string r in Rate)
             {
-                Rates[int.Parse(r)-1] = true;
+                Rates[int.Parse(r) - 1] = true;
             }
 
             FilterViewModel filterViewModel = new()
             {
                 Search = filterSearchText,
+                ActorSearch = actorSearch,
+                DirectorSearch = directorSearch,
                 Category = Category,
                 ProduceYearMin = ProduceYearMin,
                 ProduceYearMax = ProduceYearMax,
@@ -70,7 +77,7 @@ namespace MovieDB.Controllers
 
             MovieFilterViewModel movieFilterViewModel = new()
             {
-                MovieViewModel = filteredMovies ,
+                MovieViewModel = filteredMovies,
                 FilterViewModel = filterViewModel
             };
 
@@ -79,23 +86,37 @@ namespace MovieDB.Controllers
 
         private List<Movie> FilterMovies(FilterViewModel filterViewModel)
         {
-             List<Movie> allMovies;
+            IQueryable<Movie> x = _databaseContext.Movies.AsQueryable();
+
             if (filterViewModel.Search != null && filterViewModel.Search != "")
-                allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim())).ToList();
-            else
-                allMovies = _databaseContext.Movies.ToList();
-            return allMovies;
+                x = x.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim()));
+            if (filterViewModel.ActorSearch != null && filterViewModel.ActorSearch != "")
+                x = x.Where(movie => movie.Artists.Contains(filterViewModel.ActorSearch.Trim()));
+            if (filterViewModel.DirectorSearch != null && filterViewModel.DirectorSearch != "")
+                x = x.Where(movie => movie.Director.Contains(filterViewModel.DirectorSearch.Trim()));
+            if (filterViewModel.Category != "All Categories")
+                x = x.Where(movie => movie.Type.Equals(filterViewModel.Category));
+            if (filterViewModel.ProduceYearMin != null && filterViewModel.ProduceYearMin != "")
+                x = x.Where(movie => movie.ProduceYear >= int.Parse(filterViewModel.ProduceYearMin));
+            if (filterViewModel.ProduceYearMax != null && filterViewModel.ProduceYearMax != "")
+                x = x.Where(movie => movie.ProduceYear <= int.Parse(filterViewModel.ProduceYearMax));
+            if (filterViewModel.MinuteMin != null && filterViewModel.MinuteMin != "")
+                x = x.Where(movie => movie.Hour * 60 + movie.Minute >= int.Parse(filterViewModel.MinuteMin));
+            if (filterViewModel.MinuteMax != null && filterViewModel.MinuteMax != "")
+                x = x.Where(movie => movie.Hour * 60 + movie.Minute <= int.Parse(filterViewModel.MinuteMax));
+            x = x.Where(movie =>
+            (filterViewModel.Rates[0] && movie.Rate == 1) ||
+            (filterViewModel.Rates[1] && movie.Rate == 2) ||
+            (filterViewModel.Rates[2] && movie.Rate == 3) ||
+            (filterViewModel.Rates[3] && movie.Rate == 4) ||
+            (filterViewModel.Rates[4] && movie.Rate == 5));
+
+            return x.ToList();
         }
 
         private List<string> GetCategories()
         {
-            List<Movie> allMovies = _databaseContext.Movies.ToList();
-            HashSet<string> categorySet = new();
-            foreach(Movie movie in allMovies)
-            {
-                categorySet.Add(movie.Type);
-            }
-            return new List<string>(categorySet);
+            return _databaseContext.Movies.Select(movie => movie.Type).Distinct().ToList();
         }
 
         [AllowAnonymous]
@@ -103,6 +124,9 @@ namespace MovieDB.Controllers
         {
             return View();
         }
+
+       
+
 
         [AllowAnonymous]
         public IActionResult AccessDenied()
@@ -117,5 +141,19 @@ namespace MovieDB.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+     
+    public IActionResult Contact(ContactViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // Process the contact form submission (e.g., send an email)
+
+            // Set a success message to be displayed on the page
+            ViewBag.Message = "Your message has been sent successfully. We will get back to you soon!";
+        }
+
+        return View(model);
+    }
     }
 }

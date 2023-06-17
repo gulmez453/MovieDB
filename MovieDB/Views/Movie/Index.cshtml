@@ -43,7 +43,7 @@
             <div class="col-md-8">
                 <div class="card-body">
                     <h5 class="card-title">@movieComments.Movie.Title</h5>
-                    <p class="card-text">@movieComments.Movie.Description</p>
+                    <p class="card-text">@movieComments.Movie.Rate</p>
                     <p class="card-text"><small class="text-muted">@movieComments.Movie.ProduceYear</small></p>
 
                     <div class="row">
@@ -135,7 +135,7 @@
                         <textarea class="ps-2" disabled style="width: 100%; resize: none;">@userComment.Comment.CommentText</textarea>
                     </div>
                     <div class="col-1 d-flex justify-content-end">
-                        @if (@User.FindFirst("id")?.Value == userComment.User.Id.ToString())
+                        @if (@User.FindFirst("id")?.Value == userComment.User.Id.ToString() || User.IsInRole("admin"))
                         {
                             <a type="button" class="btn btn-danger" style="width: 30px; height: 30px; padding: 0px" asp-controller="Movie" asp-action="RemoveComment" asp-route-commentId="@userComment.Comment.Id">x</a>
                         }

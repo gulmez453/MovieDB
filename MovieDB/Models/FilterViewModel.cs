@@ -5,6 +5,8 @@ namespace MovieDB.Models
     public class FilterViewModel
     {
         public string Search { get; set; }
+        public string DirectorSearch { get; set; }
+        public string ActorSearch { get; set; }
         public string Category { get; set; }
         public string ProduceYearMin { get; set; }
         public string ProduceYearMax { get; set; }
