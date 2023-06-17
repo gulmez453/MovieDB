@@ -20,32 +20,58 @@ namespace MovieDB.Controllers
             foreach (Movie movie in allMovies)
             {
                 List<UserComment> userComments = new List<UserComment>();
-                List<MovieUser> movieUserComments = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movie.Id).ToList();
+                List<UserRate> userRates = new List<UserRate>();
+                List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movie.Id).ToList();
+                
 
-                foreach (MovieUser movieUser in movieUserComments)
+                foreach (MovieUser movieUser in movieUsers)
                 {
+                    List<Comment> comments = _databaseContext.Comments.Where(comment => comment.MovieUserId == movieUser.Id).ToList();
+                    List<Rate> rates = _databaseContext.Rates.Where(rate => rate.MovieUserId == movieUser.Id).ToList();
                     User user = _databaseContext.Users.SingleOrDefault(user => user.Id == movieUser.UserId);
-                    Comment comment = _databaseContext.Comments.SingleOrDefault(comment => comment.MovieUserId == movieUser.Id);
-                    UserComment userComment = new UserComment
-                    {
-                        User = user,
-                        Comment = comment
-                    };
 
-                    userComments.Add(userComment);
+                    foreach (Comment comment in comments)
+                    {
+                        UserComment userComment = new UserComment
+                        {
+                            User = user,
+                            Comment = comment
+                        };
+
+                        userComments.Add(userComment);
+                    }
+
+                    foreach (Rate rate in rates)
+                    {
+                        UserRate userRate = new UserRate
+                        {
+                            User = user,
+                            Rate = rate
+                        };
+
+                        userRates.Add(userRate);
+                    }
+
+
                 }
+  
+
+                List<UserComment>  sortedUserComments = userComments.OrderBy(userComment => userComment.Comment.CreatedAt).ToList();
+                List<UserRate> sortedUserRates = userRates.OrderBy(userRate=> userRate.Rate.CreatedAt).ToList();
 
                 MovieComments movieComments = new MovieComments
                 {
                     Movie = movie,
-                    UserComments = userComments
+                    UserComments = sortedUserComments,
+                    UserRates = sortedUserRates
                 };
+
                 commentedMovies.Add(movieComments);
 
             }
             return commentedMovies;
         }
-        public IActionResult Details(Guid movieId)
+        public IActionResult Details(int movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
             if (movie == null)
@@ -61,20 +87,67 @@ namespace MovieDB.Controllers
             return View(getMovieComments(allMovies));
         }
 
+        public IActionResult AddRate(int movieId, string[] rating)
+        {
+            int rateNum = rating.Length;
+            Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.UserId == userid && mu.MovieId == movieId);
+            if(movieUser == null)
+            {
+                movieUser = new MovieUser
+                {
+                    MovieId = movieId,
+                    UserId = userid,
+                };
+                _databaseContext.Add(movieUser);
+                _databaseContext.SaveChanges();
+            }
+
+            Rate rate = _databaseContext.Rates.SingleOrDefault(mu => mu.MovieUserId == movieUser.Id);
+            if (rate == null)
+            {
+
+                rate = new Rate
+                {
+                    MovieUserId = movieUser.Id,
+                    RateNum = rateNum,
+                    CreatedAt = DateTime.Now,
+                };
+
+                _databaseContext.Add(rate);
+                _databaseContext.SaveChanges();
+            }
+            else 
+            {
+                rate.RateNum = rateNum;
+                _databaseContext.SaveChanges();
+            }
+
+
+          
+
+            return RedirectToAction("Index");
+        }
+        
         [HttpPost]
-        public IActionResult AddComment(Guid movieId, string commentText)
+        public IActionResult AddComment(int movieId, string commentText)
         {
             Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
             User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
 
-            MovieUser movieUser = new MovieUser
+            MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.UserId == userid && mu.MovieId == movieId);
+            if(movieUser == null) 
             {
-                MovieId = movieId,
-                UserId = userid,
-            };
+                movieUser = new MovieUser
+                {
+                    MovieId = movieId,
+                    UserId = userid,
+                };
+                _databaseContext.Add(movieUser);
+                _databaseContext.SaveChanges();
 
-            _databaseContext.Add(movieUser);
-            _databaseContext.SaveChanges();
+            }
+
 
             Comment comment = new Comment
             {
@@ -89,20 +162,21 @@ namespace MovieDB.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult RemoveComment(Guid commentId)
+        public IActionResult RemoveComment(int commentId)
         {
             Comment comment;
             comment = _databaseContext.Comments.SingleOrDefault(comment => comment.Id == commentId);
             if (comment != null)
             {
-                Guid movieUserId = comment.MovieUserId;
+                int movieUserId = comment.MovieUserId;
                 _databaseContext.Remove(comment);
-
+                /*
                 MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.Id == movieUserId);
                 if (movieUser != null)
                 {
                     _databaseContext.Remove(movieUser);
                 }
+                */
             }
 
             _databaseContext.SaveChanges();
@@ -128,7 +202,7 @@ namespace MovieDB.Controllers
 
         }
 
-        public IActionResult GetImage(Guid movieId)
+        public IActionResult GetImage(int movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
             if (movie != null && movie.Image != null)

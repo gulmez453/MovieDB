@@ -19,7 +19,7 @@ namespace MovieDB.Controllers
             AllCategories = this.GetCategories();
         }
         [AllowAnonymous]
-        public IActionResult GetImage(Guid movieId)
+        public IActionResult GetImage(int movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
             if (movie != null && movie.Image != null)

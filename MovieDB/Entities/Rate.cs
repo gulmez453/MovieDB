@@ -3,18 +3,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MovieDB.Entities
 {
-
-    [Table("MoviesUsers")]
-    public class MovieUser
+    [Table("Rates")]
+    public class Rate
     {
         [Key]
         public int Id { get; set; }
-        
-        [Required]
-        public int MovieId { get; set; }
 
         [Required]
-        public Guid UserId { get; set; }
+        public int MovieUserId { get; set; }
+
+        [Required]
+        public int RateNum { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public DateTime CreatedAt { get; set; }
+
 
     }
 }

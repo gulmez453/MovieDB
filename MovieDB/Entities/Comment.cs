@@ -7,10 +7,10 @@ namespace MovieDB.Entities
     public class Comment
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public Guid MovieUserId { get; set; }
+        public int MovieUserId { get; set; }
 
         [Required]
         [StringLength(100)]

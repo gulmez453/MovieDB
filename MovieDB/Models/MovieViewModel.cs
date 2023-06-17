@@ -5,7 +5,7 @@ namespace MovieDB.Models
     public class MovieViewModel
     {
         [Required(ErrorMessage = "required")]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "required")]
         [StringLength(30, ErrorMessage = "can be max 30 characters")]

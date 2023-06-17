@@ -2,6 +2,25 @@
 @{
     ViewData["Title"] = "Movies";
 }
+<style>
+    .star {
+        visibility: hidden;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+        .star:before {
+            content: "\2606";
+            position: absolute;
+            visibility: visible;
+        }
+
+        .star:checked:before {
+            content: "\2605";
+            position: absolute;
+        }
+        
+</style>
 
 <form method="post" asp-action="SearchMovie" asp-controller="Movie">
     <div class="row mb-3">
@@ -26,9 +45,73 @@
                     <h5 class="card-title">@movieComments.Movie.Title</h5>
                     <p class="card-text">@movieComments.Movie.Description</p>
                     <p class="card-text"><small class="text-muted">@movieComments.Movie.ProduceYear</small></p>
+
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label class="form-label">Avarage Rate</label>
+                        </div>
+                        <div class="col-md-7 d-flex flex-nowrap">
+                            @{
+                                int averageRate = 0;
+                                foreach(var userRate in movieComments.UserRates)
+                                {
+                                    averageRate += userRate.Rate.RateNum;
+                                }
+                                if (movieComments.UserRates.Count != 0)
+                                    averageRate /= movieComments.UserRates.Count;
+
+                            }
+                            @for (int rate = 0; rate < 5; rate++)
+                            {
+                                if (rate < averageRate)
+                                {
+                                    <span class="" data-value="">&#9733;</span>
+                                }
+                                else
+                                {
+                                    <span class="" data-value="">&#9734;</span>
+                                }  
+                                
+                            }
+                            <br/>
+                        </div>
+                    </div>
+
+
+                    <form id="rateForm" method="post" asp-action="AddRate" asp-controller="Movie">
+                        <input type="hidden" name="movieId" value="@movieComments.Movie.Id" />
+                        <div class="row">
+                            <div class="col-md-5 d-flex flex-nowrap">
+                                @{
+                                    int userRateValue = 0;
+                                    var theuserRate = movieComments.UserRates.FirstOrDefault(userRate => userRate.User.Id.ToString() == User.FindFirst("id")?.Value);
+
+                                    if (theuserRate != null)
+                                        userRateValue = theuserRate.Rate.RateNum;
+                                }
+                                @for (int rate = 1; rate <= 5; rate++)
+                                {
+                                    if (rate <= userRateValue)
+                                    {
+                                        <input checked class="star" type="checkbox" id="star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this)" />
+                                    }
+
+                                    else
+                                    {
+                                        <input class="star" type="checkbox" id="star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this)" />
+                                    }
+                                }
+                            </div>
+                            <br/>
+                            <br />
+                        </div>
+
+                    </form>
+ 
+
                     <a class="me-1" href="#" onclick="toggleCommentArea(this); return false;" style="text-decoration: none;">Add Comment</a>
                     <a class="ms-1 me-1" href="#" onclick="toggleCommentsView(this); return false;" style="text-decoration: none;">View Comments</a>
-                    <a class="ms-1" href="@Url.Action("Details", "Movie", new { movieId = movieComments.Movie.Id })">Details</a>
+                    <a class="ms-1" href="@Url.Action("Details", "Movie", new { movieId = movieComments.Movie.Id })" style="text-decoration: none;">Details</a>
 
                     <a data-bs-target="#detailsModal" style="text-decoration: none;" data-movie-title="@movieComments.Movie.Title"
                        data-movie-artists="@movieComments.Movie.Artists" data-movie-director="@movieComments.Movie.Director"
@@ -81,6 +164,63 @@
     function toggleCommentsView(button) {
         var commentsView = button.closest('.card').querySelector('.comments-view');
         commentsView.style.display = commentsView.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectStar(checkbox)
+    {
+        var star1 = document.getElementById("star1");
+        var star2 = document.getElementById("star2");
+        var star3 = document.getElementById("star3");
+        var star4 = document.getElementById("star4");
+        var star5 = document.getElementById("star5");
+
+        if(checkbox.value == 1)
+        {
+            star1.checked = true;
+            star2.checked = false;
+            star3.checked = false;
+            star4.checked = false;
+            star5.checked = false;
+        }
+
+        else if(checkbox.value == 2)
+        {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = false;
+            star4.checked = false;
+            star5.checked = false;
+        }
+
+        else if (checkbox.value == 3) {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = true;
+            star4.checked = false;
+            star5.checked = false;
+        }
+
+        else if (checkbox.value == 4) {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = true;
+            star4.checked = true;
+            star5.checked = false;
+        }
+
+        else if(checkbox.value == 5)
+        {
+            star1.checked = true;
+            star2.checked = true;
+            star3.checked = true;
+            star4.checked = true;
+            star5.checked = true;
+        }
+
+        var form = document.getElementById('rateForm');
+        form.submit();
+
+
     }
 
 
