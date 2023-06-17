@@ -106,9 +106,9 @@ namespace MovieDB.Controllers
             _databaseContext.Add(comment);
             _databaseContext.SaveChanges();
 
-           return View("/Views/Movie/Details?movieId=" + movieId);
+            return RedirectToAction("Details", new { movieId = movieId });
 
-           // return RedirectToAction("Index");
+            
         }
 
         public IActionResult RemoveComment(Guid commentId)
