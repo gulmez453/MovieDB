@@ -74,7 +74,7 @@ namespace MovieDB.Controllers
             }
             return commentedMovies;
         }
-        public IActionResult Details(Guid movieId)
+        public IActionResult Details(int movieId)
         {
             var movie = _databaseContext.Movies.SingleOrDefault(m => m.Id == movieId);
             if (movie == null)
@@ -84,7 +84,12 @@ namespace MovieDB.Controllers
 
             var movieCommentsModel = getMovieComments(new List<Movie> { movie }).FirstOrDefault();
 
+            return View(movieCommentsModel);
         }
+
+
+
+        /*
         public IActionResult Details(Guid movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
