@@ -8,7 +8,7 @@ namespace MovieDB.Entities
     public class Movie
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [StringLength(100)]
         [Required]

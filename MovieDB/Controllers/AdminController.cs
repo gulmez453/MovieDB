@@ -39,7 +39,7 @@ namespace MovieDB.Controllers
             return View(allMovies);
         }
 
-        public IActionResult GetImage(Guid movieId)
+        public IActionResult GetImage(int movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
             if (movie != null && movie.Image != null)
@@ -107,7 +107,7 @@ namespace MovieDB.Controllers
             return View();
         }
 
-        public IActionResult UpdateMovie(Guid movieId)
+        public IActionResult UpdateMovie(int movieId)
         {
             ViewData["movieId"] = movieId;
             return View();
@@ -156,7 +156,7 @@ namespace MovieDB.Controllers
 
         }
 
-        public IActionResult RemoveMovie(Guid movieId)
+        public IActionResult RemoveMovie(int movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == movieId);
 

@@ -24,9 +24,11 @@ namespace MovieDB.Migrations
 
             modelBuilder.Entity("MovieDB.Entities.Comment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CommentText")
                         .HasColumnType("nvarchar(max)");
@@ -35,8 +37,8 @@ namespace MovieDB.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("MovieUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("MovieUserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -45,9 +47,11 @@ namespace MovieDB.Migrations
 
             modelBuilder.Entity("MovieDB.Entities.Movie", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Artists")
                         .IsRequired()
@@ -101,12 +105,14 @@ namespace MovieDB.Migrations
 
             modelBuilder.Entity("MovieDB.Entities.MovieUser", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("MovieId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -114,6 +120,29 @@ namespace MovieDB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MoviesUsers");
+                });
+
+            modelBuilder.Entity("MovieDB.Entities.Rate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasMaxLength(50)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RateNum")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rates");
                 });
 
             modelBuilder.Entity("MovieDB.Entities.User", b =>

@@ -9,5 +9,7 @@ namespace MovieDB.Models
 
         public List<UserComment> UserComments { get; set; }
 
+        public List<UserRate> UserRates { get; set; }
+
     }
 }

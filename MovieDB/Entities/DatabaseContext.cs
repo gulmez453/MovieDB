@@ -12,6 +12,8 @@ namespace MovieDB.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Rate> Rates { get; set; }
         public DbSet<MovieUser> MoviesUsers { get; set; }
+
     }
 }

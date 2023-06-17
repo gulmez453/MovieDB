@@ -8,10 +8,10 @@ namespace MovieDB.Entities
     public class MovieUser
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         
         [Required]
-        public Guid MovieId { get; set; }
+        public int MovieId { get; set; }
 
         [Required]
         public Guid UserId { get; set; }

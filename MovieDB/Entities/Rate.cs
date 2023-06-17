@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieDB.Entities
 {
-    [Table("Comments")]
-    public class Comment
+    [Table("Rates")]
+    public class Rate
     {
         [Key]
         public int Id { get; set; }
@@ -12,9 +12,8 @@ namespace MovieDB.Entities
         [Required]
         public int MovieUserId { get; set; }
 
-        
-        
-        public string? CommentText { get; set; }
+        [Required]
+        public int RateNum { get; set; }
 
         [Required]
         [StringLength(50)]
