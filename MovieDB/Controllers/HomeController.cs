@@ -12,11 +12,12 @@ namespace MovieDB.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly DatabaseContext _databaseContext;
         private List<string> AllCategories;
+
         public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
         {
             _logger = logger;
             _databaseContext = databaseContext;
-            AllCategories = this.GetCategories();
+            AllCategories = this.GetCategories(); // This will calculate only one time, and it will be used for filter side category selectbox
         }
         [AllowAnonymous]
         public IActionResult GetImage(int movieId)
@@ -32,15 +33,42 @@ namespace MovieDB.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-       
-        
+
+
 
 
         public IActionResult Index()
         {
+            // This is default view method
+            // getting all movies
+            // then creates a FilterViewModel with allCategories and defaultly all rates are checked
             List<Movie> allMovies = _databaseContext.Movies.ToList();
+            foreach (Movie movie in allMovies)
+            {
+                int averageRate = 0;
+                List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movie.Id).ToList();
+                foreach (MovieUser movieUser in movieUsers)
+                {
+                    Rate rate = _databaseContext.Rates.FirstOrDefault(rate => rate.MovieUserId == movieUser.Id);
+                    if (rate != null)
+                    {
+                        averageRate += rate.RateNum;
+                    }
+                }
+                List<Rate> rates = _databaseContext.Rates.ToList();
+                if (rates.Count != 0)
+                    averageRate /= rates.Count;
+                else
+                    averageRate = 0;
+
+                movie.Rate = averageRate;
+                _databaseContext.SaveChanges();
+
+            }
+
+
             FilterViewModel filterViewModel = new() { AllCategories = this.AllCategories, Rates = new List<bool> { true, true, true, true, true } };
-            MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies , FilterViewModel=filterViewModel};
+            MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies, FilterViewModel = filterViewModel };
 
 
             return View(movieFilterViewModel);
@@ -52,7 +80,7 @@ namespace MovieDB.Controllers
             string filterSearchText, string actorSearch, string directorSearch, string Category,
             string ProduceYearMin, string ProduceYearMax,string MinuteMin, string MinuteMax, string[] Rate, int pageNumber = 1)
         {
-            // Preparing Rates
+            // Preparing Rates for understant which indexes are checked
             List<bool> Rates = new() { false, false, false, false, false };
             foreach (string r in Rate)
             {
@@ -73,7 +101,7 @@ namespace MovieDB.Controllers
                 AllCategories = this.AllCategories
             };
 
-            List<Movie> filteredMovies = this.FilterMovies(filterViewModel);
+            List<Movie> filteredMovies = this.FilterMovies(filterViewModel); 
 
             MovieFilterViewModel movieFilterViewModel = new()
             {
@@ -87,24 +115,42 @@ namespace MovieDB.Controllers
 
         private List<Movie> FilterMovies(FilterViewModel filterViewModel)
         {
+            // To be able to send a query as a chain I get all movies as IQueryable
             IQueryable<Movie> x = _databaseContext.Movies.AsQueryable();
 
+            // If users entered something to movie search bar, filter it
             if (filterViewModel.Search != null && filterViewModel.Search != "")
                 x = x.Where(movie => movie.Title.Contains(filterViewModel.Search.Trim()));
+
+            // If users entered something to actor search bar, filter it
             if (filterViewModel.ActorSearch != null && filterViewModel.ActorSearch != "")
                 x = x.Where(movie => movie.Artists.Contains(filterViewModel.ActorSearch.Trim()));
+
+            // If users entered something to director search bar, filter it
             if (filterViewModel.DirectorSearch != null && filterViewModel.DirectorSearch != "")
                 x = x.Where(movie => movie.Director.Contains(filterViewModel.DirectorSearch.Trim()));
+
+            // If users selected a category, filter it
             if (filterViewModel.Category != "All Categories")
                 x = x.Where(movie => movie.Type.Equals(filterViewModel.Category));
+
+            // If users entered something to produceyearmin search bar, filter it
             if (filterViewModel.ProduceYearMin != null && filterViewModel.ProduceYearMin != "")
                 x = x.Where(movie => movie.ProduceYear >= int.Parse(filterViewModel.ProduceYearMin));
+
+            // If users entered something to produceyearmax search bar, filter it
             if (filterViewModel.ProduceYearMax != null && filterViewModel.ProduceYearMax != "")
                 x = x.Where(movie => movie.ProduceYear <= int.Parse(filterViewModel.ProduceYearMax));
+
+            // If users entered something to minutemin search bar, filter it
             if (filterViewModel.MinuteMin != null && filterViewModel.MinuteMin != "")
                 x = x.Where(movie => movie.Hour * 60 + movie.Minute >= int.Parse(filterViewModel.MinuteMin));
+
+            // If users entered something to minutemax search bar, filter it
             if (filterViewModel.MinuteMax != null && filterViewModel.MinuteMax != "")
                 x = x.Where(movie => movie.Hour * 60 + movie.Minute <= int.Parse(filterViewModel.MinuteMax));
+
+            // Checksboxes are controlling and necessary ones are usşng for filtering
             x = x.Where(movie =>
             (filterViewModel.Rates[0] && movie.Rate == 1) ||
             (filterViewModel.Rates[1] && movie.Rate == 2) ||
@@ -112,11 +158,12 @@ namespace MovieDB.Controllers
             (filterViewModel.Rates[3] && movie.Rate == 4) ||
             (filterViewModel.Rates[4] && movie.Rate == 5));
 
-            return x.ToList();
+            return x.ToList(); // converting IQueryable to List
         }
 
         private List<string> GetCategories()
         {
+            // Getting all unique category names from database
             return _databaseContext.Movies.Select(movie => movie.Type).Distinct().ToList();
         }
 

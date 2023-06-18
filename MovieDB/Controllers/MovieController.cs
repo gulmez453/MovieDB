@@ -26,44 +26,52 @@ namespace MovieDB.Controllers
             {
                 List<UserComment> userComments = new List<UserComment>();
                 List<UserRate> userRates = new List<UserRate>();
+
+                // get the movieUsers
                 List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movie.Id).ToList();
                 
 
                 foreach (MovieUser movieUser in movieUsers)
                 {
+                    // get the comments and rates releated with movieUser
                     List<Comment> comments = _databaseContext.Comments.Where(comment => comment.MovieUserId == movieUser.Id).ToList();
                     List<Rate> rates = _databaseContext.Rates.Where(rate => rate.MovieUserId == movieUser.Id).ToList();
                     User user = _databaseContext.Users.SingleOrDefault(user => user.Id == movieUser.UserId);
 
                     foreach (Comment comment in comments)
                     {
+                        // create a userComment model
                         UserComment userComment = new UserComment
                         {
                             User = user,
                             Comment = comment
                         };
 
+                        // add the userComment to the list
                         userComments.Add(userComment);
                     }
 
                     foreach (Rate rate in rates)
                     {
+                        // create a userRate model
                         UserRate userRate = new UserRate
                         {
                             User = user,
                             Rate = rate
                         };
 
+                        // add the userRate to the list
                         userRates.Add(userRate);
                     }
 
 
                 }
   
-
+                // return the lists to the sorted lists
                 List<UserComment>  sortedUserComments = userComments.OrderBy(userComment => userComment.Comment.CreatedAt).ToList();
                 List<UserRate> sortedUserRates = userRates.OrderBy(userRate=> userRate.Rate.CreatedAt).ToList();
 
+                //create a MovieComments model
                 MovieComments movieComments = new MovieComments
                 {
                     Movie = movie,
@@ -71,6 +79,7 @@ namespace MovieDB.Controllers
                     UserRates = sortedUserRates
                 };
 
+                // add the movieComments to the list
                 commentedMovies.Add(movieComments);
 
             }
@@ -89,22 +98,9 @@ namespace MovieDB.Controllers
             return View(movieCommentsModel);
         }
 
-
-
-        /*
-        public IActionResult Details(Guid movieId)
-        {
-            Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
-            if (movie == null)
-            {
-                return NotFound(); // Return a 404 Not Found error if the movie is not found
-            }
-
-            return View(movie);
-        }
-        */
         public IActionResult Index()
         {
+            // list the movies
             List<Movie> allMovies = _databaseContext.Movies.ToList();
             return View(getMovieComments(allMovies));
         }
@@ -112,10 +108,15 @@ namespace MovieDB.Controllers
         public IActionResult AddRate(int movieId, string[] rating)
         {
             int rateNum = rating.Length;
+
+            // get the user
             Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            // get the movieUser
             MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.UserId == userid && mu.MovieId == movieId);
             if(movieUser == null)
             {
+                // create the movieser if it doesn't exist
                 movieUser = new MovieUser
                 {
                     MovieId = movieId,
@@ -128,7 +129,7 @@ namespace MovieDB.Controllers
             Rate rate = _databaseContext.Rates.SingleOrDefault(mu => mu.MovieUserId == movieUser.Id);
             if (rate == null)
             {
-
+                // create a rate
                 rate = new Rate
                 {
                     MovieUserId = movieUser.Id,
@@ -136,11 +137,13 @@ namespace MovieDB.Controllers
                     CreatedAt = DateTime.Now,
                 };
 
+                // add the rate to the db
                 _databaseContext.Add(rate);
                 _databaseContext.SaveChanges();
             }
             else 
             {
+                // set the rateNum if the rate exists
                 rate.RateNum = rateNum;
                 _databaseContext.SaveChanges();
             }
@@ -158,12 +161,15 @@ namespace MovieDB.Controllers
         [HttpPost]
         public IActionResult AddComment(int movieId, string commentText)
         {
+            // get the user
             Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
             User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userid);
 
+            // get the movieUser
             MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.UserId == userid && mu.MovieId == movieId);
             if(movieUser == null) 
             {
+                // create the movieser if it doesn't exist
                 movieUser = new MovieUser
                 {
                     MovieId = movieId,
@@ -174,7 +180,7 @@ namespace MovieDB.Controllers
 
             }
 
-
+            // create a comment
             Comment comment = new Comment
             {
                 MovieUserId = movieUser.Id,
@@ -182,6 +188,7 @@ namespace MovieDB.Controllers
                 CreatedAt = DateTime.Now,
             };
 
+            // add the comment to the db
             _databaseContext.Add(comment);
             _databaseContext.SaveChanges();
 
@@ -201,19 +208,15 @@ namespace MovieDB.Controllers
 
         public IActionResult RemoveComment(int commentId, int movieId)
         {
+            // get the comment
             Comment comment;
             comment = _databaseContext.Comments.SingleOrDefault(comment => comment.Id == commentId);
             if (comment != null)
             {
+                // remove the comment if it exists
                 int movieUserId = comment.MovieUserId;
                 _databaseContext.Remove(comment);
-                /*
-                MovieUser movieUser = _databaseContext.MoviesUsers.SingleOrDefault(mu => mu.Id == movieUserId);
-                if (movieUser != null)
-                {
-                    _databaseContext.Remove(movieUser);
-                }
-                */
+
             }
 
             _databaseContext.SaveChanges();
@@ -239,6 +242,7 @@ namespace MovieDB.Controllers
         [HttpPost]
         public IActionResult SearchMovie(string searchText)
         {
+            // get the filtered movie list
             List<Movie> allMovies;
             if (searchText != null && searchText != "")
                 allMovies = _databaseContext.Movies.Where(movie => movie.Title.Contains(searchText.Trim())).ToList();
@@ -252,13 +256,15 @@ namespace MovieDB.Controllers
         public IActionResult GetImage(int movieId)
         {
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
+
+            // return the image wiht byte array
             if (movie != null && movie.Image != null)
             {
-                return File(movie.Image, "image/jpeg"); // Modify the content type based on your image format
+                return File(movie.Image, "image/jpeg"); 
             }
 
-            // If the movie or image is not found, you can return a default image or an error message
-            return File("~/images/default.jpg", "image/jpeg"); // Replace with your default image path and content type
+            // return the default image it doesn't exist
+            return File("~/images/default.jpg", "image/jpeg");
         }
     }
 }
