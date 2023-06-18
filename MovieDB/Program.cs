@@ -12,7 +12,7 @@ namespace MovieDB
 
             // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            
+
             //Connection for database
             builder.Services.AddDbContext<DatabaseContext>(opts =>
             {
