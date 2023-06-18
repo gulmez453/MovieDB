@@ -59,7 +59,7 @@ namespace MovieDB.Controllers
                 if (rates.Count != 0)
                     averageRate /= rates.Count;
                 else
-                    averageRate = 0;
+                    averageRate = movie.Rate;
 
                 movie.Rate = averageRate;
                 _databaseContext.SaveChanges();
