@@ -114,8 +114,9 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public  IActionResult UpdateMovie(MovieViewModel model)
+        public IActionResult UpdateMovie(MovieViewModel model)
         {
+            
             if (ModelState.IsValid)
             {
                 // Find the existing movie by its unique identifier, such as ID

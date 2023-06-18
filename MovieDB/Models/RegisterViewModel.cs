@@ -3,7 +3,7 @@
 namespace MovieDB.Models
 {
     public class RegisterViewModel
-    {
+    {   //register data model with annotation limits and error message
         [Required(ErrorMessage = "E-mail is required")]
         [StringLength(30, ErrorMessage = "E-mail can be max 30 characters")]
         public string email { get; set; }
@@ -17,10 +17,12 @@ namespace MovieDB.Models
         [MaxLength(16, ErrorMessage = "Password can be max 16 characters")]
         public string Password { get; set; }
 
+        
         [Required(ErrorMessage = "Re-Password is required")]
         [MinLength(6, ErrorMessage = "Re-Password can be min 30 characters")]
         [MaxLength(16, ErrorMessage = "Re-Password can be max 16 characters")]
-        [Compare(nameof(Password))]
+        //compare repassword with password
+        [Compare(nameof(Password))] 
         public string RePassword { get; set; }
     }
 }

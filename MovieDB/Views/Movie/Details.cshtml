@@ -3,8 +3,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="~/css/site.css" rel="stylesheet" />
 <script src="~/js/site.js"></script>
+
+<!--movie content detail page-->
+
 <div class="card">
     <div>
+
+        <!--poster and information-->
         <div class="details_image">
             <img src="data:image;base64,@Convert.ToBase64String(Model.Movie.Image)" alt="@Model.Movie.Title" class="movie-image" />
         </div>
@@ -25,6 +30,7 @@
                     <td>@Model.Movie.Type</td>
                 </tr>
                 <tr>
+                    <!--avarage rate-->
                     <td>Rate: </td>
                     <td>
                         <div class="col-md-7 d-flex flex-nowrap">
@@ -83,6 +89,7 @@
     <div class="card card-body">
         <div style="float:left;"><h4 class="modal-header mb-3">Comments</h4></div>
         <div class ="col-md-7 d-flex flex-nowrap" style="float:left">
+            <!--give a rate. if you have rate you can change it-->
             <form id="rateForm" method="post" asp-action="AddRate" asp-controller="Movie">
                 <input type="hidden" name="movieId" value="@Model.Movie.Id" />
                 <div class="row">
@@ -113,6 +120,8 @@
 
             </form>
         </div>
+
+        <!--if you are log in you can write comment-->
         @if (User.Identity.IsAuthenticated)
         {
             <form method="post" asp-action="AddComment" asp-controller="Movie">
@@ -140,6 +149,7 @@
         {
             <p>You must be <a href="@Url.Action("Login", "Account")">logged in</a> to post a comment.</p>
         }
+        <!--other comment-->
         @foreach (var userComment in Model.UserComments)
         {
             <div class="card-body">
@@ -151,6 +161,7 @@
                                 <p>@userComment.Comment.CommentText</p>
                             </td>
                             <td>
+                                <!--if you comment owner or admin you can remove this-->
                                 @if (User.FindFirst("id")?.Value == userComment.User.Id.ToString() || User.IsInRole("admin"))
                                 {
                                     <a type="button" class="btn btn-danger btn-sm" asp-controller="Movie" asp-action="RemoveComment" asp-route-commentId="@userComment.Comment.Id" asp-route-movieId="@Model.Movie.Id">Remove</a>
@@ -171,7 +182,7 @@
     </div>
 </div>
 
-
+<!--star script-->
 <script>
     function toggleCommentArea(button) {
         var commentArea = button.closest('.card').querySelector('.comment-area');

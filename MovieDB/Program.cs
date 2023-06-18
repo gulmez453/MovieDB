@@ -12,14 +12,16 @@ namespace MovieDB
 
             // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            
+            //Connection for database
             builder.Services.AddDbContext<DatabaseContext>(opts =>
             {
                 opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            //definion autgenication method with cookie sheme
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
-                {
+                {   //cookie options
                     opts.Cookie.Name = ".movieDb.auth";
                     opts.ExpireTimeSpan = TimeSpan.FromDays(1);
                     opts.SlidingExpiration = false;
@@ -39,9 +41,9 @@ namespace MovieDB
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            // kimlik doðrulama
             app.UseAuthentication();
-
+            // rolleri check et
             app.UseAuthorization();
 
             app.MapControllerRoute(

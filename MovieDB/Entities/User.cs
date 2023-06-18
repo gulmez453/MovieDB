@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieDB.Entities
 {
-    [Table("Users")]
+    [Table("Users")] // for database table name
     public class User
     {
-        [Key]
+        [Key] // uniqe key
         public Guid Id { get; set; }
 
         [StringLength(30)]
         [Required]
         public string FullName { get; set; }
-
+        //for unique email/username validation with error
         [Remote("IsUsernameUnique", "Validation", HttpMethod = "POST", ErrorMessage = "Mail adresi zaten kullanılıyor.")]
         [StringLength(30)]
         [Required]
@@ -25,6 +25,6 @@ namespace MovieDB.Entities
 
         [Required]
         [StringLength(30)]
-        public string Role { get; set; } = "user";
+        public string Role { get; set; } = "user"; //default role user
     }
 }

@@ -12,54 +12,56 @@ using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribut
 
 namespace MovieDB.Controllers
 {
-    [Authorize]
-    public class AccountController : Controller
+    [Authorize]  // Unless otherwise specified, it requires login.
+    public class AccountController : Controller  //miras
 
     {
         
         private readonly DatabaseContext _databaseContext;
         private readonly IConfiguration _configiration;
-
+        //To inject dependencies  for AccountController,
+        //we will use DatabaseContext and IConfiguration.
 
         public AccountController(DatabaseContext databaseContext, IConfiguration configiration)
         {
             _databaseContext = databaseContext;
             _configiration = configiration;
         }
-        [AllowAnonymous]
+        [AllowAnonymous] // display login
         public IActionResult Login()
         {
             return View();
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost] // login post action
         public IActionResult Login(LoginViewModel model)
         {
             if(ModelState.IsValid)
             {
-                
+                // for uniqe password hash we use salt function
                 string hashedPasword = SaltFunction(model.Password);
 
                 User user = _databaseContext.Users.SingleOrDefault(x => x.email.ToLower() == model.email.ToLower() && x.Password == hashedPasword);
                 if (user != null)
-                {
+                {   // store data in claim list
                     List<Claim> claims = new List<Claim>();
                     claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
                     claims.Add(new Claim(ClaimTypes.Name, user.FullName?? string.Empty));
                     claims.Add(new Claim(ClaimTypes.Role, user.Role?? string.Empty));
                     claims.Add(new Claim("email", user.email));
                     claims.Add(new Claim("id", user.Id.ToString()));
-
+                    // authentication  coockie
                     ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
+                    // give ıdetinty
                     ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+                    //method of login with principal
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                     return RedirectToAction("Index", "Home");
                 }
                 else
-                {
+                {   // error mesage
                     ModelState.AddModelError("", "Username or password is incorrect.");
                 }
             }
@@ -67,14 +69,14 @@ namespace MovieDB.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
+        [AllowAnonymous] // open register form
         public IActionResult Register()
         {
             return View();
         }
 
-        [AllowAnonymous]
-        [HttpPost]
+        [AllowAnonymous]  // all visitor can reach 
+        [HttpPost]  //register post method
         public IActionResult Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -85,7 +87,7 @@ namespace MovieDB.Controllers
                     return View(model);
                 }
                 string hashedPasword = SaltFunction(model.Password);
-
+                //create object  and add database
                 User user = new()
                 {
                     email = model.email,
@@ -94,7 +96,7 @@ namespace MovieDB.Controllers
                 };
 
                 _databaseContext.Users.Add(user);
-
+                // check if changes have been made
                 int affectedRowCount = _databaseContext.SaveChanges();
 
                 if (affectedRowCount == 0)
@@ -111,15 +113,15 @@ namespace MovieDB.Controllers
             return View(model);
            
         }
-
+        // we use for salt fonktion NETCore.Encrypt API
         private string SaltFunction(string password)
-        {
+        {   // we have additinal string in appsetting. we add salt and hash
             string Salt = _configiration.GetValue<string>("AppSettings:Salt");
             string saltedpass = password + Salt;
             string hashedPasword = saltedpass.MD5();
             return hashedPasword;
         }
-
+        // open profil and fill inputs with profil loader
         public IActionResult Profile()
         {
             ProfileLoader();
@@ -127,6 +129,7 @@ namespace MovieDB.Controllers
             return View();
         }
 
+        //for fill inputs after save 
         private void ProfileLoader()
         {
             Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -136,7 +139,7 @@ namespace MovieDB.Controllers
             ViewData["FullName"] = user.FullName;
         }
 
-        [HttpPost]
+        [HttpPost] // for profil  email change post data
         public IActionResult ProfileChangeEmail([Required][StringLength(30)] string? email)
         {
             if(ModelState.IsValid)
@@ -145,16 +148,16 @@ namespace MovieDB.Controllers
                 User user = _databaseContext.Users.SingleOrDefault ( a => a.Id == userid);
 
                 user.email = email;
-                _databaseContext.SaveChanges();
-                ViewData["result"] = "EmailChanged";
+                _databaseContext.SaveChanges(); // save chages
+                ViewData["result"] = "EmailChanged"; // give message
               
                 
             }
-            ProfileLoader();
+            ProfileLoader(); // get updated data
             return View("Profile");
         }
 
-        [HttpPost]
+        [HttpPost]//for profil email change post data
         public IActionResult ProfileChangeName([Required][StringLength(30)] string? name)
         {
             if (ModelState.IsValid)
@@ -172,7 +175,7 @@ namespace MovieDB.Controllers
             return View("Profile");
         }
 
-        [HttpPost]
+        [HttpPost] // for change password
         public IActionResult ProfileChangePassword([Required][MinLength(6)][MaxLength(16)] string? password)
         {
             if (ModelState.IsValid)
@@ -190,8 +193,8 @@ namespace MovieDB.Controllers
             ProfileLoader();
             return View("Profile");
         }
-
-        public IActionResult Logout()
+        // for using logout
+        public IActionResult Logout() //log out and redirect index
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 

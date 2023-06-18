@@ -15,8 +15,11 @@
     <center>
     <div class=" col-4 mt-4 center">
         <div class="mb-4 ">
+
+            <!--validation error-->
         <div asp-validation-summary="All" class="text-danger small"></div>
         </div>
+        <!--mail update-->
         <form method="post" asp-action="ProfileChangeEmail">
             <div class="form-group">
             <label class="form-label">Email</label>
@@ -32,7 +35,7 @@
                 }
             </div>
         </form>
-
+           <!--name update-->
         <form method="post" asp-action="ProfileChangeName">
             <div class="form-group">
                 <label class="form-label mt-3">Name Surname</label>
@@ -48,7 +51,7 @@
                 }
             </div>
         </form>
-
+        <!--password update-->
         <form method="post" asp-action="ProfileChangePassword">
             <div class="form-group">
                 <label class="form-label mt-3">New Password</label>
