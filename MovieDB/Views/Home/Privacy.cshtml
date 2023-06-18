@@ -3,6 +3,8 @@
 }
 
 <style>
+
+/* Container styling */
     .container {
         max-width: 800px;
         margin: 0 auto;
@@ -10,30 +12,34 @@
         border-radius: 8px;
     } 
 
-    /* Heading styles */
+    /* Heading styling */
     h1 {
         font-size: 24px;
         color: #333;
         margin-bottom: 20px;
     }
 
-    /* Paragraph styles */
+    /* Paragraph styling */
     p {
         font-size: 16px;
         line-height: 1.5;
         margin-bottom: 15px;
     }
 
-    /* Link styles */
+    /* Link styling */
     a {
         color: #007bff;
         text-decoration: none;
     }
 
+/* This will make an underline when the linked text is hovered with cursor */
         a:hover {
             text-decoration: underline;
         }
 </style>
+
+<!--This section starts the container element and displays the heading specified in ViewData["Title"].
+It also includes a paragraph explaining the purpose of the Privacy Policy.-->
 
 <div class="container">
     <h2>@ViewData["Title"]</h2>
@@ -67,5 +73,6 @@
     <h1>Changes to This Privacy Policy</h1>
     <p>We may update our Privacy Policy from time to time. Any changes we make will be posted on this page.</p>
 
+<!--This line provides a closing paragraph with a link to the contact page for any inquiries regarding the Privacy Policy.-->
     <p>If you have any questions about this Privacy Policy, please <a href="/home/contact">contact us</a>.</p>
 </div>
