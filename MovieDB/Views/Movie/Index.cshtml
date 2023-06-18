@@ -32,9 +32,12 @@
         </div>
     </div>
 </form>
-
+@{
+    int count = 0;
+}
 @foreach (var movieComments in Model)
 {
+    count++;
     <div class="card mb-3 p-2" style="max-width: 540px;">
         <div class="row g-0">
             <div class="col-md-4">
@@ -78,7 +81,7 @@
                     </div>
 
 
-                    <form id="rateForm" method="post" asp-action="AddRate" asp-controller="Movie">
+                    <form id="rateForm@(count)" method="post" asp-action="AddRate" asp-controller="Movie">
                         <input type="hidden" name="movieId" value="@movieComments.Movie.Id" />
                         <div class="row">
                             <div class="col-md-5 d-flex flex-nowrap">
@@ -93,12 +96,12 @@
                                 {
                                     if (rate <= userRateValue)
                                     {
-                                        <input checked class="star" type="checkbox" id="star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this)" />
+                                        <input checked class="star" type="checkbox" id="@(count)star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this, '@(count)')" />
                                     }
 
                                     else
                                     {
-                                        <input class="star" type="checkbox" id="star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this)" />
+                                        <input class="star" type="checkbox" id="@(count)star@(rate)" name="rating" value="@(rate)" onclick="selectStar(this, '@(count)')" />
                                     }
                                 }
                             </div>
@@ -166,13 +169,13 @@
         commentsView.style.display = commentsView.style.display === 'none' ? 'block' : 'none';
     }
 
-    function selectStar(checkbox)
+    function selectStar(checkbox, count)
     {
-        var star1 = document.getElementById("star1");
-        var star2 = document.getElementById("star2");
-        var star3 = document.getElementById("star3");
-        var star4 = document.getElementById("star4");
-        var star5 = document.getElementById("star5");
+        var star1 = document.getElementById(count + "star1");
+        var star2 = document.getElementById(count + "star2");
+        var star3 = document.getElementById(count + "star3");
+        var star4 = document.getElementById(count + "star4");
+        var star5 = document.getElementById(count + "star5");
 
         if(checkbox.value == 1)
         {
@@ -217,7 +220,7 @@
             star5.checked = true;
         }
 
-        var form = document.getElementById('rateForm');
+        var form = document.getElementById("rateForm" + count);
         form.submit();
 
 
