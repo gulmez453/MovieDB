@@ -180,7 +180,7 @@ namespace MovieDB.Controllers
             _databaseContext.Add(comment);
             _databaseContext.SaveChanges();
 
-            return RedirectToAction("Details", new { movieId = movieId });
+            return RedirectToAction("Index");
 
             
         }

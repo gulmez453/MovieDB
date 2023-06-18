@@ -158,43 +158,68 @@ namespace MovieDB.Controllers
 
         public IActionResult RemoveMovie(int movieId)
         {
-            Movie movie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == movieId);
+            Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
 
             if (movie != null)
             {
-                _databaseContext.Movies.Remove(movie);
-
-                int affectedRowCount = _databaseContext.SaveChanges();
-
-                if (affectedRowCount == 0)
+                List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movieId).ToList();
+                foreach (MovieUser movieUser in movieUsers)
                 {
-                    ModelState.AddModelError("", "The movie can not be removed");
+                    List<Comment> comments = _databaseContext.Comments.Where(comment => comment.MovieUserId == movieUser.Id).ToList();
+                    _databaseContext.Comments.RemoveRange(comments);
+
+                    Rate rate = _databaseContext.Rates.FirstOrDefault(rate => rate.MovieUserId == movieUser.Id);
+                    if (rate != null)
+                    {
+                        _databaseContext.Rates.Remove(rate);
+                    }
                 }
 
+                _databaseContext.MoviesUsers.RemoveRange(movieUsers);
+                _databaseContext.Movies.Remove(movie);
+
+                int result = _databaseContext.SaveChanges();
+
+                if (result == 0)
+                {
+                    ModelState.AddModelError("", "The movie could not be removed.");
+                }
             }
 
             return RedirectToAction("ListMovies");
-
         }
 
         public IActionResult RemoveUser(Guid userId)
         {
-            User user = _databaseContext.Users.FirstOrDefault(movie => movie.Id == userId);
+            User user = _databaseContext.Users.FirstOrDefault(u => u.Id == userId);
 
             if (user != null)
             {
+                List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.UserId == userId).ToList();
+                foreach (MovieUser movieUser in movieUsers)
+                {
+                    List<Comment> comments = _databaseContext.Comments.Where(comment => comment.MovieUserId == movieUser.Id).ToList();
+                    _databaseContext.Comments.RemoveRange(comments);
+
+                    Rate rate = _databaseContext.Rates.FirstOrDefault(rate => rate.MovieUserId == movieUser.Id);
+                    if (rate != null)
+                    {
+                        _databaseContext.Rates.Remove(rate);
+                    }
+                }
+
+                _databaseContext.MoviesUsers.RemoveRange(movieUsers);
                 _databaseContext.Users.Remove(user);
 
-                int affectedRowCount = _databaseContext.SaveChanges();
-
-                if (affectedRowCount == 0)
+                int result = _databaseContext.SaveChanges();
+                if (result == 0)
                 {
-                    ModelState.AddModelError("", "The user can not be removed");
+                    ModelState.AddModelError("", "The user could not be removed.");
                 }
 
             }
 
-            return RedirectToAction("ListMovies");
+            return RedirectToAction("ListUsers");
         }
 
 
