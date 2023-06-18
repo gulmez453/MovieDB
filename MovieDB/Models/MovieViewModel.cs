@@ -26,7 +26,7 @@ namespace MovieDB.Models
         public int ProduceYear { get; set; }
 
         [Required(ErrorMessage = "required")]
-        [Range(0, 5, ErrorMessage = "required")]
+        [Range(1, 5, ErrorMessage = "required")]
         public int Rate { get; set; } = -1;
 
         [Required(ErrorMessage = "required")]
