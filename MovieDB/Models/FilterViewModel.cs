@@ -14,5 +14,6 @@ namespace MovieDB.Models
         public string MinuteMax { get; set; }
         public List<bool> Rates { get; set; }
         public List<string> AllCategories { get; set; }
+        public int PageNumber { get; set; }
     }
 }

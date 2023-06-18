@@ -50,7 +50,7 @@ namespace MovieDB.Controllers
         [AllowAnonymous]
         public IActionResult Index(
             string filterSearchText, string actorSearch, string directorSearch, string Category,
-            string ProduceYearMin, string ProduceYearMax,string MinuteMin, string MinuteMax, string[] Rate)
+            string ProduceYearMin, string ProduceYearMax,string MinuteMin, string MinuteMax, string[] Rate, int pageNumber = 1)
         {
             // Preparing Rates
             List<bool> Rates = new() { false, false, false, false, false };
@@ -78,7 +78,8 @@ namespace MovieDB.Controllers
             MovieFilterViewModel movieFilterViewModel = new()
             {
                 MovieViewModel = filteredMovies,
-                FilterViewModel = filterViewModel
+                FilterViewModel = filterViewModel,
+                
             };
 
             return View(movieFilterViewModel);

@@ -141,33 +141,39 @@
     </div>
 
     <!-- Film List, Right Side -->
+    @{
+        var moviesPerPage = 16;
+        var totalPages = (int)Math.Ceiling((double)Model.MovieViewModel.Count / moviesPerPage);
+    }
+
     <div id="film-list-div" class="card">
         <div class="row">
-@for (int i = 0; i < 5; i++)
-{
-    @foreach (var movie in Model.MovieViewModel)
-    {
-                    <div class="col-md-3">
-                        <div class="card" style="width:180px; height:330px;">
-                            <a href="@Url.Action("Details", "Movie", new { movieId = movie.Id })">
-                                <img class="card-img-top" src="@Url.Action("GetImage", new { movieId = movie.Id })" alt="@movie.Title" style="width:180px; height:280px">
-                            </a>
-                            <div class="card-body">
-                                <h6 class="card-title" alt="@movie.Title" style="max-width: 150px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
-                        @movie.Title
-                                </h6>
-                            </div>
+            @foreach (var movie in Model.MovieViewModel.Skip((Model.PageNumber - 1) * moviesPerPage).Take(moviesPerPage))
+            {
+                <div class="col-md-3">
+                    <div class="card mb-3" style="width:180px; height:330px;">
+                        <a href="@Url.Action("Details", "Movie", new { movieId = movie.Id })">
+                            <img class="card-img-top" src="@Url.Action("GetImage", new { movieId = movie.Id })" alt="@movie.Title" style="width:180px; height:280px">
+                        </a>
+                        <div class="card-body mb-7">
+                            <h6 class="card-title" alt="@movie.Title" style="max-width: 150px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+                                @movie.Title
+                            </h6>
                         </div>
                     </div>
-
-    }
-}
-
-
+                </div>
+            }
         </div>
-
+        <div class="pagination mt-3" style="clear:both;">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = i })">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
     </div>
-
-    </div>
-
-

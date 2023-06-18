@@ -56,17 +56,20 @@ body {
     cursor: pointer;
     margin-top: 15px;
     margin-left: 10px;
+    
 }
 
     .star:before {
         content: "\2606";
         position: absolute;
         visibility: visible;
+        
     }
 
     .star:checked:before {
         content: "\2605";
         position: absolute;
+        
     }
 
 .form-group, .row {
