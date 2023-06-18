@@ -33,8 +33,8 @@ namespace MovieDB.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-       
-        
+
+
 
 
         public IActionResult Index()
@@ -43,8 +43,32 @@ namespace MovieDB.Controllers
             // getting all movies
             // then creates a FilterViewModel with allCategories and defaultly all rates are checked
             List<Movie> allMovies = _databaseContext.Movies.ToList();
+            foreach (Movie movie in allMovies)
+            {
+                int averageRate = 0;
+                List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movie.Id).ToList();
+                foreach (MovieUser movieUser in movieUsers)
+                {
+                    Rate rate = _databaseContext.Rates.FirstOrDefault(rate => rate.MovieUserId == movieUser.Id);
+                    if (rate != null)
+                    {
+                        averageRate += rate.RateNum;
+                    }
+                }
+                List<Rate> rates = _databaseContext.Rates.ToList();
+                if (rates.Count != 0)
+                    averageRate /= rates.Count;
+                else
+                    averageRate = 0;
+
+                movie.Rate = averageRate;
+                _databaseContext.SaveChanges();
+
+            }
+
+
             FilterViewModel filterViewModel = new() { AllCategories = this.AllCategories, Rates = new List<bool> { true, true, true, true, true } };
-            MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies , FilterViewModel=filterViewModel};
+            MovieFilterViewModel movieFilterViewModel = new() { MovieViewModel = allMovies, FilterViewModel = filterViewModel };
 
 
             return View(movieFilterViewModel);
