@@ -1,50 +1,9 @@
 ﻿@model MovieFilterViewModel
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Movie Database";
 }
 
-<style>
-    .carousel-item img {
-        width: 100%;
-        height: 400px; /* İstenilen boyutu burada belirleyebilirsiniz */
-        object-fit: cover;
-    }
-
-    #filter-div {
-        width: 25%;
-        float: left;
-        padding: 10px;
-    }
-
-    #film-list-div {
-        width: 75%;
-        float: left;
-    }
-
-    .star {
-        visibility: hidden;
-        font-size: 20px;
-        cursor: pointer;
-        margin-top: 15px;
-        margin-left: 10px;
-    }
-
-        .star:before {
-            content: "\2606";
-            position: absolute;
-            visibility: visible;
-        }
-
-        .star:checked:before {
-            content: "\2605";
-            position: absolute;
-        }
-
-    .form-group, .row {
-        padding: 5px;
-    }
-
-</style>
+<link href="~/css/site.css" rel="stylesheet" />
 
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -56,20 +15,26 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://www.nicepng.com/png/detail/436-4369539_movie-logo-film.png" class="d-block w-100" alt="...">
+          
+            <img src="~/images/movie.jpg" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h5 class="text-black">Movie Web Site</h5>
-                <p class="text-black">You can find and look your movies which you search in this website .</p>
+        <h1>Welcome Movie Database</h1>
+                <p id="sliderslogan" class="text-white">You can find and look your movies which you search in this website .</p>
+            <h5 class="text-white text-bold">Have Fun !</h5>
             </div>
         </div>
         @foreach (var movie in Model.MovieViewModel)
         {
             <div class="carousel-item">
                 <a href="@Url.Action("Details", "Movie", new { movieId = movie.Id })"><img src="@Url.Action("GetImage", new { movieId = movie.Id })" class="d-block w-100" alt="..."></a>
+                
+                    
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>@movie.Title</h5>
-                    <p>@movie.Description</p>
+                    <h1>@movie.Title</h1>
+                       
                 </div>
+                    
+               
             </div>
         }
     </div>
@@ -85,9 +50,9 @@
 <br />
 
 <!-- Film Section-->
-<div">
+<div class="body">
     <!-- Filter Part, Left Side-->
-    <div id="filter-div" class="border border-primary rounded ">
+    <div id="filter-div" class="card">
 
         <form method="POST">
             <div class="form-group">
@@ -176,7 +141,7 @@
     </div>
 
     <!-- Film List, Right Side -->
-    <div id="film-list-div" class="border border-danger rounded container mx-auto mt-4">
+    <div id="film-list-div" class="card">
         <div class="row">
 @for (int i = 0; i < 5; i++)
 {

@@ -2,25 +2,10 @@
 @{
     ViewData["Title"] = "Movies";
 }
-<style>
-    .star {
-        visibility: hidden;
-        font-size: 20px;
-        cursor: pointer;
-    }
 
-        .star:before {
-            content: "\2606";
-            position: absolute;
-            visibility: visible;
-        }
 
-        .star:checked:before {
-            content: "\2605";
-            position: absolute;
-        }
-        
-</style>
+<link href="~/css/site.css" rel="stylesheet" />
+<script src="~/js/site.js"></script>
 
 <form method="post" asp-action="SearchMovie" asp-controller="Movie">
     <div class="row mb-3">
