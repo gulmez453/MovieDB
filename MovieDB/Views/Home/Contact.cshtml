@@ -5,7 +5,12 @@
 
 
 <style>
-    /* Container styles */
+
+/* This section contains CSS styles for various elements used in the view.
+Each section is commented to indicate which styles are applied to specific elements. */
+
+
+    /* Container styling */
     .container {
         max-width: 500px;
         margin: 0 auto;
@@ -13,17 +18,19 @@
         border-radius: 8px;
     }
 
-    /* Form styles */
+    /* Form styling */
     .contact-form {
         margin-bottom: 30px;
     }
 
+ /* Styles for labels in form groups */
     .form-group label {
         font-weight: bold;
         color: #333;
         font-family: 'Helvetica', Arial, sans-serif;
     }
 
+ /* Styles for form inputs and textareas */
     .form-group input,
     .form-group textarea {
         width: 100%;
@@ -38,17 +45,19 @@
         font-family: 'Helvetica', Arial, sans-serif;
     }
 
+/* Styles for textarea */
     .form-group textarea {
         resize: vertical;
     }
 
+/* Styles for input and textarea when focused */
         .form-group input:focus,
         .form-group textarea:focus {
             border-color: #007bff;
             outline: none;
         }
 
-    /* Submit button styles */
+    /* Submit button styling */
     .btn-primary {
         display: block;
         width: 100%;
@@ -64,11 +73,12 @@
         font-family: 'Helvetica', Arial, sans-serif;
     }
 
+/* Styles for submit button on hover */
         .btn-primary:hover {
             background-color: #0056b3;
         }
 
-    /* Success message styles */
+    /* Success message styling */
     .alert-success {
         color: #155724;
         background-color: #d4edda;
@@ -79,6 +89,10 @@
     }
 </style>
 
+<!--This section starts the container element and displays the heading 
+"Contact Us" in blue color and using the 'Helvetica', Arial, sans-serif font.It also includes a conditional statement to check if ViewBag.
+Message is not null or empty. If it's not empty, it displays a success message div with the content of ViewBag.Message-->
+
 <div class="container">
     <h2 style="color: #007bff; font-family: 'Helvetica', Arial, sans-serif;">Contact Us</h2>
 
@@ -86,6 +100,11 @@
     {
         <div class="alert alert-success">@ViewBag.Message</div>
     }
+
+ <!--This section contains a form with various form groups.
+    Each form group consists of a label and an input field or textarea.
+    The input fields and textarea have specific classes for styling.
+    The submit button is also included at the end of the form.-->
 
     <form method="post" asp-action="Contact" class="contact-form">
         <div class="form-group">
