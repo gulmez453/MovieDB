@@ -41,13 +41,14 @@
                         <div class="col-md-7 d-flex flex-nowrap">
                            
                             @{
+                                int totalRate = 0;
                                 int averageRate = 0;
                                 foreach(var userRate in movieComments.UserRates)
                                 {
-                                    averageRate += userRate.Rate.RateNum;
+                                    totalRate += userRate.Rate.RateNum;
                                 }
                                 if (movieComments.UserRates.Count != 0)
-                                    averageRate /= movieComments.UserRates.Count;
+                                    averageRate = totalRate / movieComments.UserRates.Count;
 
                             }
                             @for (int rate = 0; rate < 5; rate++)
@@ -72,6 +73,8 @@
                 <div style="margin-top:-20px; margin-left:-17px">
                     <form id="rateForm@(count)" method="post" asp-action="AddRate" asp-controller="Movie">
                         <input type="hidden" name="movieId" value="@movieComments.Movie.Id" />
+                        <input type="hidden" name="totalRate" value="@totalRate" />
+                        <input type="hidden" name="rateCount" value="@movieComments.UserRates.Count" />
                         <div class="row" style="width:120px">
                             <div class="col-md-5 d-flex flex-nowrap">
                                

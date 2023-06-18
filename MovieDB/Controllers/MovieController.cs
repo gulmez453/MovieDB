@@ -7,6 +7,7 @@ using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace MovieDB.Controllers
 {
@@ -105,9 +106,12 @@ namespace MovieDB.Controllers
             return View(getMovieComments(allMovies));
         }
         [Authorize]
-        public IActionResult AddRate(int movieId, string[] rating)
-        {
+        public IActionResult AddRate(int movieId, int totalRate, int rateCount, string[] rating)
+        {   
             int rateNum = rating.Length;
+            int averageRate = 0;
+            totalRate += rateNum;
+            averageRate = totalRate / (rateCount + 1);
 
             // get the user
             Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -147,6 +151,15 @@ namespace MovieDB.Controllers
                 rate.RateNum = rateNum;
                 _databaseContext.SaveChanges();
             }
+            Movie movie = _databaseContext.Movies.SingleOrDefault(movie => movie.Id == movieId);
+            if(movie != null)
+            {
+                movie.Rate = averageRate;
+                _databaseContext.SaveChanges();
+            }
+              
+
+
 
             string referer = HttpContext.Request.Headers["Referer"].ToString();
             if (referer.Contains ("Movie/Details"))            {
