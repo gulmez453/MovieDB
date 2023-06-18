@@ -76,24 +76,25 @@
             <div class="form-group">
                 <label for="Category" class="font-weight-bold">Category</label>
                 <br />
-                <select class="custom-select" name="Category">
-                    <option value="All Categories">All Categories</option>
-@foreach (string category in Model.FilterViewModel.AllCategories)
-{
-    if (category == Model.FilterViewModel.Category)
-    {
-                            <option selected value="@category">@category</option>
-    }
-    else
-    {
-                            <option value="@category">@category</option>
-    }
-}
 
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="font-weight-bold">Rate</label>
+                <select class="custom-select" name="Category" style="width:100%;color:gray; height:38px;">
+                                    <option value="All Categories">All Categories</option>
+                @foreach (string category in Model.FilterViewModel.AllCategories)
+                {
+                    if (category == Model.FilterViewModel.Category)
+                    {
+                                            <option selected value="@category">@category</option>
+                    }
+                    else
+                    {
+                                            <option value="@category">@category</option>
+                    }
+                }
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Rate</label>
                 <br>
 @for (int i = 1; i <= 5; i++)
 {

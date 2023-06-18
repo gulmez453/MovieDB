@@ -6,7 +6,7 @@
 
 <link href="~/css/site.css" rel="stylesheet" />
 <script src="~/js/site.js"></script>
-
+<div>
 <form method="post" asp-action="SearchMovie" asp-controller="Movie">
     <div class="row mb-3">
         <div class="col-4">
@@ -17,28 +17,29 @@
         </div>
     </div>
 </form>
+</div>
 @{
     int count = 0;
 }
 @foreach (var movieComments in Model)
 {
     count++;
-    <div class="card mb-3 p-2" style="max-width: 540px;">
-        <div class="row g-0">
-            <div class="col-md-4">
-                <img style="width: 100%; height: 150px; object-fit: cover;" src="@Url.Action("GetImage", new { movieId = movieComments.Movie.Id })" class="img-fluid rounded-start" alt="...">
+    <div class="card mb-3 p-2 m-2" style="max-width: 540px;float:left;">
+        <div class="row g-0" >
+            <div class="col-md-4 ">
+                <img style="width: 100%;  object-fit: cover;" src="@Url.Action("GetImage", new { movieId = movieComments.Movie.Id })" class="img-fluid rounded-start" alt="...">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
                     <h5 class="card-title">@movieComments.Movie.Title</h5>
-                    <p class="card-text">@movieComments.Movie.Rate</p>
-                    <p class="card-text"><small class="text-muted">@movieComments.Movie.ProduceYear</small></p>
+
 
                     <div class="row">
                         <div class="col-md-5">
                             <label class="form-label">Avarage Rate</label>
                         </div>
                         <div class="col-md-7 d-flex flex-nowrap">
+                           
                             @{
                                 int averageRate = 0;
                                 foreach(var userRate in movieComments.UserRates)
@@ -64,12 +65,16 @@
                             <br/>
                         </div>
                     </div>
-
-
+                    <label class="card-text">@movieComments.Movie.Artists</label>
+                    <div style="margin-bottom:5px;margin-top:5px;"><label class="card-text"><small class="text-muted">@movieComments.Movie.ProduceYear</small></label>
+                    </div>
+                    <label class="card-text">Give Your Rate!</label>
+                <div style="margin-top:-20px; margin-left:-17px">
                     <form id="rateForm@(count)" method="post" asp-action="AddRate" asp-controller="Movie">
                         <input type="hidden" name="movieId" value="@movieComments.Movie.Id" />
-                        <div class="row">
+                        <div class="row" style="width:120px">
                             <div class="col-md-5 d-flex flex-nowrap">
+                               
                                 @{
                                     int userRateValue = 0;
                                     var theuserRate = movieComments.UserRates.FirstOrDefault(userRate => userRate.User.Id.ToString() == User.FindFirst("id")?.Value);
@@ -77,6 +82,7 @@
                                     if (theuserRate != null)
                                         userRateValue = theuserRate.Rate.RateNum;
                                 }
+                                
                                 @for (int rate = 1; rate <= 5; rate++)
                                 {
                                     if (rate <= userRateValue)
@@ -95,7 +101,7 @@
                         </div>
 
                     </form>
- 
+                    </div>
 
                     <a class="me-1" href="#" onclick="toggleCommentArea(this); return false;" style="text-decoration: none;">Add Comment</a>
                     <a class="ms-1 me-1" href="#" onclick="toggleCommentsView(this); return false;" style="text-decoration: none;">View Comments</a>

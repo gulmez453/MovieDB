@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace MovieDB.Controllers
 {
@@ -144,10 +145,14 @@ namespace MovieDB.Controllers
                 _databaseContext.SaveChanges();
             }
 
-
-          
-
-            return RedirectToAction("Index");
+            string referer = HttpContext.Request.Headers["Referer"].ToString();
+            if (referer.Contains ("Movie/Details"))            {
+                return RedirectToAction("Details", new { movieId = movieId });
+            }
+            else 
+            {
+                return RedirectToAction("Index"); 
+            }
         }
         
         [HttpPost]
@@ -180,12 +185,21 @@ namespace MovieDB.Controllers
             _databaseContext.Add(comment);
             _databaseContext.SaveChanges();
 
-            return RedirectToAction("Index");
+            string referer = HttpContext.Request.Headers["Referer"].ToString();
+            if (referer.Contains("Movie/Details"))
+            {
+                return RedirectToAction("Details", new { movieId = movieId });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
 
-            
+
         }
 
-        public IActionResult RemoveComment(int commentId)
+
+        public IActionResult RemoveComment(int commentId, int movieId)
         {
             Comment comment;
             comment = _databaseContext.Comments.SingleOrDefault(comment => comment.Id == commentId);
@@ -203,7 +217,17 @@ namespace MovieDB.Controllers
             }
 
             _databaseContext.SaveChanges();
-            return RedirectToAction("Index");
+
+            string referer = HttpContext.Request.Headers["Referer"].ToString();
+            if (referer.Contains("Movie/Details"))
+            {
+                return RedirectToAction("Details", new { movieId = movieId });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            };
+            
         }
 
         public IActionResult SearchMovie()
