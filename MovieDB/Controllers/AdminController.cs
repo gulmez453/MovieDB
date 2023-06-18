@@ -29,26 +29,30 @@ namespace MovieDB.Controllers
 
         public IActionResult ListUsers()
         {
+            // list the all users
             List<User> allMovies = _databaseContext.Users.ToList();
             return View(allMovies);
 
         }
         public IActionResult ListMovies()
         {
+            // list the all movies
             List<Movie> allMovies = _databaseContext.Movies.ToList();
             return View(allMovies);
         }
 
         public IActionResult GetImage(int movieId)
         {
+           
             Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
+            // return the image with byte array
             if (movie != null && movie.Image != null)
             {
-                return File(movie.Image, "image/jpeg"); // Modify the content type based on your image format
+                return File(movie.Image, "image/jpeg");
             }
 
-            // If the movie or image is not found, you can return a default image or an error message
-            return File("~/images/default.jpg", "image/jpeg"); // Replace with your default image path and content type
+            // return the default image it doesn't exist
+            return File("~/images/default.jpg", "image/jpeg");
         }
 
         public IActionResult AddMovie()
@@ -61,12 +65,14 @@ namespace MovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
+                //check is there any movie
                 if (_databaseContext.Movies.Any(movie => movie.Title.ToLower() == model.Title.ToLower()))
                 {
                     ModelState.AddModelError(nameof(model.Title), "The movie is already exists.");
                     return View(model);
                 }
 
+                // return the byte arrey to imageData
                 byte[] imageData;
                 using (var memoryStream = new MemoryStream())
                 {
@@ -74,6 +80,7 @@ namespace MovieDB.Controllers
                     imageData = memoryStream.ToArray();
                 }
 
+                // create movie object
                 Movie movie = new Movie()
                 {
                     Title = model.Title,
@@ -89,6 +96,7 @@ namespace MovieDB.Controllers
                     fragman = model.fragman
                 };
 
+                // add the movie to the db
                 _databaseContext.Movies.Add(movie);
 
                 int affectedRowCount = _databaseContext.SaveChanges();
@@ -109,6 +117,7 @@ namespace MovieDB.Controllers
 
         public IActionResult UpdateMovie(int movieId)
         {
+            // pass the data to view
             ViewData["movieId"] = movieId;
             return View();
         }
@@ -118,19 +127,19 @@ namespace MovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Find the existing movie by its unique identifier, such as ID
+                // find the existing movie by its unique identifier, such as ID
                 Movie existingMovie = _databaseContext.Movies.FirstOrDefault(movie => movie.Id == model.Id);
 
                 if (existingMovie != null)
                 {
-                    // Update the properties of the existing movie with the new values
+                    // update the properties of the existing movie with the new values
                     byte[] imageData;
                     using (var memoryStream = new MemoryStream())
                     {
                         model.Image.CopyTo(memoryStream);
                         imageData = memoryStream.ToArray();
                     }
-
+                    // update the datas
                     existingMovie.Title = model.Title;
                     existingMovie.Artists = model.Artists;
                     existingMovie.Director = model.Director;
@@ -142,7 +151,7 @@ namespace MovieDB.Controllers
                     existingMovie.Description = model.Description;
                     existingMovie.Image = imageData;
 
-                    // Save the changes to the database
+                    // save the changes to the database
                     _databaseContext.SaveChanges();
 
                     return RedirectToAction("ListMovies");
@@ -162,12 +171,15 @@ namespace MovieDB.Controllers
 
             if (movie != null)
             {
+                // get the MovieUser
                 List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.MovieId == movieId).ToList();
                 foreach (MovieUser movieUser in movieUsers)
                 {
+                    // remove the releated comments
                     List<Comment> comments = _databaseContext.Comments.Where(comment => comment.MovieUserId == movieUser.Id).ToList();
                     _databaseContext.Comments.RemoveRange(comments);
 
+                    // remove the releated rate
                     Rate rate = _databaseContext.Rates.FirstOrDefault(rate => rate.MovieUserId == movieUser.Id);
                     if (rate != null)
                     {
@@ -175,6 +187,7 @@ namespace MovieDB.Controllers
                     }
                 }
 
+                // remove MovieUser and movie
                 _databaseContext.MoviesUsers.RemoveRange(movieUsers);
                 _databaseContext.Movies.Remove(movie);
 
@@ -195,12 +208,15 @@ namespace MovieDB.Controllers
 
             if (user != null)
             {
+                // get the MovieUser
                 List<MovieUser> movieUsers = _databaseContext.MoviesUsers.Where(mu => mu.UserId == userId).ToList();
                 foreach (MovieUser movieUser in movieUsers)
                 {
+                    // remove the releated comments
                     List<Comment> comments = _databaseContext.Comments.Where(comment => comment.MovieUserId == movieUser.Id).ToList();
                     _databaseContext.Comments.RemoveRange(comments);
 
+                    // remove the releated rate
                     Rate rate = _databaseContext.Rates.FirstOrDefault(rate => rate.MovieUserId == movieUser.Id);
                     if (rate != null)
                     {
@@ -208,6 +224,7 @@ namespace MovieDB.Controllers
                     }
                 }
 
+                // remove MovieUser and movie
                 _databaseContext.MoviesUsers.RemoveRange(movieUsers);
                 _databaseContext.Users.Remove(user);
 
@@ -241,6 +258,7 @@ namespace MovieDB.Controllers
         {
             User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
+            // update email
             user.email = email;
             _databaseContext.SaveChanges();
             ViewData["result"] = "EmailChanged";
@@ -254,6 +272,7 @@ namespace MovieDB.Controllers
         {
             User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
+            // update name
             user.FullName = name;
             _databaseContext.SaveChanges();
             ViewData["result"] = "NameChanged";
@@ -270,6 +289,7 @@ namespace MovieDB.Controllers
 
             string hashedPassword = SaltFunction(password);
 
+            // update password
             user.Password = hashedPassword;
             _databaseContext.SaveChanges();
 
@@ -284,6 +304,7 @@ namespace MovieDB.Controllers
         {
             User user = _databaseContext.Users.SingleOrDefault(a => a.Id == userId);
 
+            // update role
             user.Role = role == "on" ? "admin" : "user";
             _databaseContext.SaveChanges();
             ViewData["result"] = "RoleChanged";
