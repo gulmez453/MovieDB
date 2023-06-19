@@ -117,8 +117,22 @@ namespace MovieDB.Controllers
 
         public IActionResult UpdateMovie(int movieId)
         {
+            Movie movie = _databaseContext.Movies.FirstOrDefault(m => m.Id == movieId);
             // pass the data to view
             ViewData["movieId"] = movieId;
+            ViewData["movieTitle"] = movie.Title;
+            ViewData["artists"] = movie.Artists;
+            ViewData["director"] = movie.Director;
+            ViewData["type"] = movie.Type;
+            ViewData["produceYear"] = movie.ProduceYear;
+            ViewData["rate"] = movie.Rate;
+            ViewData["hour"] = movie.Hour;
+            ViewData["minute"] = movie.Minute;
+            ViewData["description"] = movie.Description;
+            ViewData["fragman"] = movie.fragman;
+
+
+
             return View();
         }
 

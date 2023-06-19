@@ -35,13 +35,14 @@
                     <td>
                         <div class="col-md-7 d-flex flex-nowrap">
                             @{
+                                int totalRate = 0;
                                 int averageRate = 0;
                                 foreach (var userRate in Model.UserRates)
                                 {
-                                    averageRate += userRate.Rate.RateNum;
+                                    totalRate += userRate.Rate.RateNum;
                                 }
                                 if (Model.UserRates.Count != 0)
-                                    averageRate /= Model.UserRates.Count;
+                                    averageRate = totalRate / Model.UserRates.Count;
 
                             }
                             @for (int rate = 0; rate < 5; rate++)
@@ -92,6 +93,8 @@
             <!--give a rate. if you have rate you can change it-->
             <form id="rateForm" method="post" asp-action="AddRate" asp-controller="Movie">
                 <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                <input type="hidden" name="totalRate" value="@totalRate" />
+                <input type="hidden" name="rateCount" value="@Model.UserRates.Count" />
                 <div class="row">
                     <div class="col-md-5 d-flex flex-nowrap">
                         @{

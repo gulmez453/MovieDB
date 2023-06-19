@@ -16,19 +16,19 @@
     
     <div class="col-12">
         <label asp-for="Title" class="form-label">Movie Title</label>
-        <input asp-for="Title" type="text" class="form-control" placeholder="Title"  )>
+        <input asp-for="Title" type="text" value=@ViewData["movieTitle"] class="form-control" placeholder="Title" )>
         <span asp-validation-for="Title" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
         <label asp-for="Artists" class="form-label">Artists</label>
-        <input asp-for="Artists" type="text" class="form-control" placeholder="Enter artists">
+        <input asp-for="Artists" type="text" value=@ViewData["Artists"] class="form-control" placeholder="Enter artists">
         <span asp-validation-for="Artists" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
         <label asp-for="Director" class="form-label">Director</label>
-        <input asp-for="Director" type="text" class="form-control" placeholder="Enter director name">
+        <input asp-for="Director" type="text" value=@ViewData["director"] class="form-control" placeholder="Enter director name">
         <span asp-validation-for="Director" class="text-danger small"></span>
     </div>
 
@@ -37,7 +37,6 @@
             <label for="inputState" class="form-label me-2">Rate</label>
             <select asp-for="Rate" id="inputState" class="form-select">
                 <option selected disabled>Choose...</option>
-                <option>0</option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -50,13 +49,13 @@
 
     <div class="col-12">
         <label asp-for="ProduceYear" class="form-label">ProduceYear</label>
-        <input asp-for="ProduceYear" type="text" class="form-control" placeholder="Enter produce year">
+        <input asp-for="ProduceYear" type="text" value=@ViewData["produceYear"] class="form-control" placeholder="Enter produce year">
         <span asp-validation-for="ProduceYear" class="text-danger small"></span>
     </div>
 
     <div class="col-12">
         <label asp-for="Description" class="form-label">Description</label>
-        <input asp-for="Description" type="text" class="form-control" placeholder="Enter Description">
+        <input asp-for="Description" type="text" value=@ViewData["description"] class="form-control" placeholder="Enter Description">
         <span asp-validation-for="Description" class="text-danger small"></span>
     </div>
 
@@ -113,7 +112,7 @@
     
     <div class="col-12">
         <label asp-for="fragman" class="form-label">Fragman</label>
-        <input asp-for="fragman" type="text" class="form-control" placeholder="Youtube link">
+        <input asp-for="fragman" type="text" value=@ViewData["fragman"] class="form-control" placeholder="Youtube link">
         <span asp-validation-for="fragman" class="text-danger small"></span>
     </div>
 
